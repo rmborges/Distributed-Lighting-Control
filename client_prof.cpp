@@ -118,7 +118,7 @@ private:
   void start_read()
   {
     // Set a deadline for the read operation.
-    deadline_.expires_from_now(boost::posix_time::seconds(30));
+    deadline_.expires_from_now(boost::posix_time::seconds(50));
 
     // Start an asynchronous operation to read a newline-delimited message.
     boost::asio::async_read_until(socket_, input_buffer_, '\n',
@@ -143,6 +143,7 @@ private:
         std::cout << "Received: " << line << "\n";
       }
 
+      std::cout << "passei no deadline" << std::endl;
       start_read();
     }
     else

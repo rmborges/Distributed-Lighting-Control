@@ -20,7 +20,21 @@ private:
 
 	void handle_write(const boost::system::error_code& error)
 	{
-	/*nothing important*/
+		//if (stopped_)
+      //return;
+
+		if (!error)
+		{
+      		// Wait 10 seconds before sending the next heartbeat.
+			heartbeat_timer_.expires_from_now(boost::posix_time::seconds(5));
+			heartbeat_timer_.async_wait(boost::bind(&tcp_connection::start_write, this));
+		}
+		else
+		{
+			std::cout << "Error on heartbeat: " << error.message() << std::endl;
+
+			//stop();
+		}
 	}
 
 	void handle_read(const boost::system::error_code& error)
@@ -40,7 +54,7 @@ private:
 			{
 				std::cout << "Received: " << line << "\n";
 			}
-
+			std::cout << "passei no deadline" << std::endl;
 			start_read();
 		}
 		else
@@ -96,23 +110,26 @@ public:
 	void start() {
 
 		start_read();
+		start_write();
 		//deadline_.async_wait(boost::bind(&tcp_connection::check_deadline, this));
 
 	}
 
 	void start_write()	{
-		/*async_write(socket_,buffer("Hello World"),
-			boost::bind(&tcp_connection::handle_write,
-				shared_from_this()));	
+		//if (stopped_)
+      //return;
 
+    // SEM O SHARED_FROM_THIS
+	std::cout << "enviei heartbeat" << std::endl;
+    boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
+      boost::bind(&tcp_connection::handle_write, this, _1));
 
+	// Start an asynchronous operation to send a heartbeat message.
+	//	boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
+	//		boost::bind(&tcp_connection::handle_write, shared_from_this(),
+	//			boost::asio::placeholders::error));
 
-
-		async_read(sock_,buffer(carla,carla.size()),
-			boost::bind(&tcp_connection::handle_write,
-				shared_from_this(),boost::asio::placeholders::error));
-		*/
-
+		/*
 		std::cout << "passei" << std::endl;
 		std::string carla = "leva_natas";
 		std::string terminated_line = carla + std::string("\n");
@@ -121,13 +138,12 @@ public:
 		async_write(socket_,boost::asio::buffer(send_buffer_,n),
 			boost::bind(&tcp_connection::handle_write,
 				shared_from_this(),boost::asio::placeholders::error)); 
+
+		*/
 	}
 
 	void start_read()	{
-		/*async_write(socket_,buffer("Hello World"),
-			boost::bind(&tcp_connection::handle_write,
-				shared_from_this()));	
-
+		/*
 		async_read(socket_,buffer(msg_),
 			boost::bind(&tcp_connection::handle_read,
 				shared_from_this(),boost::asio::placeholders::error));
@@ -138,7 +154,7 @@ public:
 
 
 	// Set a deadline for the read operation.
-		//deadline_.expires_from_now(boost::posix_time::seconds(30));
+		deadline_.expires_from_now(boost::posix_time::seconds(30));
 
     // Start an asynchronous operation to read a newline-delimited message.
 		boost::asio::async_read_until(socket_, input_buffer_, '\n',
