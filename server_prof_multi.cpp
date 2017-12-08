@@ -15,32 +15,34 @@ private:
 	tcp_connection(io_service&	io)	:
 	socket_(io),
 	heartbeat_timer_(io),
-	deadline_(io)
+	deadline_(io),
+	stopped_(false)
 	{}
+
 
 	void handle_write(const boost::system::error_code& error)
 	{
-		//if (stopped_)
-      //return;
+		if (stopped_)
+			return;
 
 		if (!error)
 		{
       		// Wait 10 seconds before sending the next heartbeat.
-			heartbeat_timer_.expires_from_now(boost::posix_time::seconds(5));
+			heartbeat_timer_.expires_from_now(boost::posix_time::seconds(10));
 			heartbeat_timer_.async_wait(boost::bind(&tcp_connection::start_write, this));
 		}
 		else
 		{
 			std::cout << "Error on heartbeat: " << error.message() << std::endl;
 
-			//stop();
+			stop();
 		}
 	}
 
 	void handle_read(const boost::system::error_code& error)
 	{
-		//if (stopped_)
-		//	return;
+		if (stopped_)
+			return;
 
 		if (!error)
 		{
@@ -61,14 +63,14 @@ private:
 		{
 			std::cout << "Error on receive: " << error.message() << "\n";
 
-			//stop();
+			stop();
 		}
 	}
 
 	void check_deadline()
 	{
-		//if (stopped_)
-		//	return;
+		if (stopped_)
+			return;
 
     // Check whether the deadline has passed. We compare the deadline against
     // the current time since a new asynchronous operation may have moved the
@@ -95,6 +97,7 @@ private:
 	deadline_timer heartbeat_timer_;
 	boost::asio::streambuf input_buffer_;
 	deadline_timer deadline_;
+	bool stopped_;
 
 
 public:	
@@ -105,6 +108,18 @@ public:
 
 	tcp::socket&	socket()	{return socket_;}
 
+	  // This function terminates all the actors to shut down the connection. It
+	  // may be called by the user of the client class, or by the class itself in
+	  // response to graceful termination or an unrecoverable error.
+	void stop()
+	{
+		stopped_ = true;
+		boost::system::error_code ignored_ec;
+		socket_.close(ignored_ec);
+		deadline_.cancel();
+		heartbeat_timer_.cancel();
+	}
+	
 	// funçao que é chamada qd se cria nova conexão
 	// fica à espera de pedido do client
 	void start() {
@@ -116,18 +131,18 @@ public:
 	}
 
 	void start_write()	{
-		//if (stopped_)
-      //return;
+		if (stopped_)
+			return;
 
     // SEM O SHARED_FROM_THIS
-	std::cout << "enviei heartbeat" << std::endl;
-    boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
-      boost::bind(&tcp_connection::handle_write, this, _1));
+		std::cout << "enviei heartbeat" << std::endl;
+    //boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
+    //  boost::bind(&tcp_connection::handle_write, this, _1));
 
 	// Start an asynchronous operation to send a heartbeat message.
-	//	boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
-	//		boost::bind(&tcp_connection::handle_write, shared_from_this(),
-	//			boost::asio::placeholders::error));
+		boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
+			boost::bind(&tcp_connection::handle_write, shared_from_this(),
+				boost::asio::placeholders::error));
 
 		/*
 		std::cout << "passei" << std::endl;
@@ -151,6 +166,7 @@ public:
 		/*async_read_until(socket_, input_buffer_, '\n',
 			boost::bind(&tcp_connection::handle_read,
 				shared_from_this(),boost::asio::placeholders::error));*/
+
 
 
 	// Set a deadline for the read operation.
