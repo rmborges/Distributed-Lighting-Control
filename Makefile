@@ -1,4 +1,4 @@
-all: chat_client chat_server client_prof server_prof_multi pig2i2c
+all: chat_client chat_server client_prof server_prof_multi teste
 
 chat_client: chat_client.cpp chat_message.hpp
 	g++ -std=c++11 chat_client.cpp -o chat_client -lpthread -lboost_system -lboost_thread
@@ -6,11 +6,11 @@ chat_client: chat_client.cpp chat_message.hpp
 chat_server: chat_server.cpp chat_message.hpp
 	g++ -std=c++11 chat_server.cpp -o chat_server -lpthread -lboost_system -lboost_thread
 
-client_prof: client_prof.cpp
+client_prof: client_prof.cpp 
 	g++ -std=c++11 client_prof.cpp -o client_prof -lpthread -lboost_system -lboost_thread
 
 server_prof_multi: server_prof_multi.cpp
 	g++ -std=c++11 server_prof_multi.cpp -o server_prof_multi -lpthread -lboost_system -lboost_thread
 
-pig2i2c: pig2i2c.c
-	gcc -o pig2i2c pig2i2c.c
+teste: teste.cpp
+	gcc -o teste teste.cpp
