@@ -11,7 +11,7 @@ class sniffer:
    to get any usable results for a bus running any faster.
    """
 
-   def __init__(self, pi, SCL, SDA, set_as_inputs=True):
+   def __init__(self, pi, SCL, SDA, set_as_inputs=False):
       """
       Instantiate with the Pi and the gpios for the I2C clock
       and data lines.
@@ -89,6 +89,7 @@ class sniffer:
             if self.bit < 8:
                self.byte = (self.byte << 1) | SDA
                self.bit += 1
+               
             else:
                self.transact += '{:02X}'.format(self.byte)
                if SDA:
@@ -97,7 +98,7 @@ class sniffer:
                   self.transact += '+'
                self.bit = 0
                self.byte = 0
-
+               
       elif xSCL == self.STEADY:
 
          if xSDA == self.RISING:
@@ -153,7 +154,7 @@ if __name__ == "__main__":
 
    pi = pigpio.pi()
 
-   s = I2C_sniffer.sniffer(pi, 1, 0, False) # leave gpios 1/0 in I2C mode
+   s = I2C_sniffer.sniffer(pi, 3,2, True) # leave gpios 1/0 in I2C mode
 
    time.sleep(60000)
 

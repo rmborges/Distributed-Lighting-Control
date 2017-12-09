@@ -13,15 +13,15 @@ bus = smbus.SMBus(1)
 
 # This is the address we setup in the Arduino Program
 #Slave Address 1
-address = 0x01
+address = 0x04
 
 #Slave Address 2
-address_2 = 0x04
+#address_2 = 0x04
 
 def writeNumber(value):
     bus.write_byte(address, value)
-    bus.write_byte(address_2, value)
-    # bus.write_byte_data(address, 0, value)
+    #bus.write_byte(address_2, value)
+    bus.write_byte_data(address, 0, value)
     return -1
 
 def readNumber():
@@ -38,6 +38,6 @@ while True:
         writeNumber(int(ord(i)))
         time.sleep(.1)
 
-    writeNumber(int(0x0A))
+    #WwriteNumber(int(0x0A))
 
 #End of the Script
