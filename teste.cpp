@@ -10,11 +10,13 @@ int main(){
     int status = bscXfer(&xfer);
     if (status >= 0)
     {
-        xfer.rxCnt = 0;
+        
         while(1){
+            status = bscXfer(&xfer);
             if (xfer.rxCnt > 0){
                 cout << xfer.rxBuf << '\n';
             }
+            xfer.rxCnt = 0;
        }    
     }
 
