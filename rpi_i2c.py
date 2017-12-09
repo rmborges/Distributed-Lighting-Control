@@ -13,10 +13,10 @@ bus = smbus.SMBus(1)
 
 # This is the address we setup in the Arduino Program
 #Slave Address 1
-address = 0x04
+address = 0x01
 
 #Slave Address 2
-address_2 = 0x05
+address_2 = 0x04
 
 def writeNumber(value):
     bus.write_byte(address, value)
