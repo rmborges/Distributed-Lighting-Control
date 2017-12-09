@@ -15,18 +15,24 @@ class sniffer:
       """
       Instantiate with the Pi and the gpios for the I2C clock
       and data lines.
+
       If you are monitoring one of the Raspberry Pi buses you
       must set set_as_inputs to False so that they remain in
       I2C mode.
+
       The pigpio daemon should have been started with a higher
       than default sample rate.
+
       For an I2C bus rate of 100Kbps sudo pigpiod -s 2 should work.
+
       A message is printed for each I2C transaction formatted with
       "[" for the START
       "XX" two hex characters for each data byte
       "+" if the data is ACKd, "-" if the data is NACKd
       "]" for the STOP
+
       E.g. Reading the X, Y, Z values from an ADXL345 gives:
+
       [A6+32+]
       [A7+01+FF+F2+FF+06+00-]
       """
@@ -154,3 +160,4 @@ if __name__ == "__main__":
    s.cancel()
 
    pi.stop()
+
