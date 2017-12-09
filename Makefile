@@ -1,4 +1,4 @@
-all: chat_client chat_server client_prof server_prof_multi
+all: chat_client chat_server client_prof server_prof_multi pig2i2c
 
 chat_client: chat_client.cpp chat_message.hpp
 	g++ -std=c++11 chat_client.cpp -o chat_client -lpthread -lboost_system -lboost_thread
@@ -12,3 +12,5 @@ client_prof: client_prof.cpp
 server_prof_multi: server_prof_multi.cpp
 	g++ -std=c++11 server_prof_multi.cpp -o server_prof_multi -lpthread -lboost_system -lboost_thread
 
+pig2i2c: pig2i2c.c
+	gcc -o pig2i2c pig2i2c.c
