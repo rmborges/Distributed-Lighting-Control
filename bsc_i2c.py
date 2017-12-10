@@ -1,29 +1,18 @@
 #!/usr/bin/env python
+
 import time
 import pigpio
 
-I2C_ADDR=0x13
+I2C_ADDR=9
 
 def i2c(id, tick):
-    global pi
+   global pi
 
-    s, b, d = pi.bsc_i2c(I2C_ADDR)
-    if b:
-        if d[0] == ord('t'): # 116 send 'HH:MM:SS*'
+   s, b, d = pi.bsc_i2c(I2C_ADDR)
 
-            print("sent={} FR={} received={} [{}]".
-               format(s>>16, s&0xfff,b,d))
+   if b:
 
-            s, b, d = pi.bsc_i2c(I2C_ADDR,
-               "{}*".format(time.asctime()[11:19]))
-
-        elif d[0] == ord('d'): # 100 send 'Sun Oct 30*'
-
-            print("sent={} FR={} received={} [{}]".
-               format(s>>16, s&0xfff,b,d))
-
-            s, b, d = pi.bsc_i2c(I2C_ADDR,
-               "{}*".format(time.asctime()[:10]))
+     print(d[:-1])
 
 pi = pigpio.pi()
 
