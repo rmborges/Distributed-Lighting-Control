@@ -13,4 +13,4 @@ server_prof_multi: server_prof_multi.cpp
 	g++ -std=c++11 server_prof_multi.cpp -o server_prof_multi -lpthread -lboost_system -lboost_thread
 
 teste: teste.cpp
-	gcc -o teste teste.cpp -lpigpio -lrt -lstdc++
+	gcc -std=c++11 -o teste teste.cpp -lpigpio -lrt -lstdc++

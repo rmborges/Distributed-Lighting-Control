@@ -8,11 +8,11 @@ int main(){
     gpioInitialise();
     xfer.control = (0x0A<<16) | 0x305; // Set I2C slave Address to 0x0A
     int status = bscXfer(&xfer);
+
     if (status >= 0)
     {
-        
         while(1){
-            status = bscXfer(&xfer);
+            //cout << "fds "<< status<< "  " << xfer.rxCnt  << '\n';
             if (xfer.rxCnt > 0){
                 cout << xfer.rxBuf << '\n';
             }
