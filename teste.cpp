@@ -29,22 +29,24 @@ Note that an i2c_address of 0 may be used to close the BSC device and reassign t
 
 
 int main(){
-    bsc_xfer_t xfer;
+    
     gpioInitialise();
-    xfer.control = (0x9<<16) | 0x305; // Set I2C slave Address to 0x9
-    xfer.txCnt = 0;
-    int status = bscXfer(&xfer);
+    while(1){
+		bsc_xfer_t xfer;
+		xfer.control = (0x9<<16) | 0x305; // Set I2C slave Address to 0x9
+		xfer.txCnt = 0;
+		int status = bscXfer(&xfer);
 
-    if (status >= 0)
-    {
-        while(1){
-            //cout << "fds "<< status<< "  " << xfer.rxCnt  << '\n';
-            if (xfer.rxCnt > 0){
-                cout << xfer.rxBuf << endl;
-            }
-            xfer.rxCnt = 0;
-       }    
-    }
+		if (status >= 0)
+		{
+	   
+				if (xfer.rxCnt > 0){
+					cout << xfer.rxBuf << endl;
+				}
+		   
+		}
+	}
+    gpioTerminate();
 
     return 1;
 } 
