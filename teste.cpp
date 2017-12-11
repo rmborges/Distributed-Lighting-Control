@@ -32,6 +32,7 @@ int main(){
     bsc_xfer_t xfer;
     gpioInitialise();
     xfer.control = (0x9<<16) | 0x305; // Set I2C slave Address to 0x9
+    xfer.txCnt = 0;
     int status = bscXfer(&xfer);
 
     if (status >= 0)
@@ -39,7 +40,7 @@ int main(){
         while(1){
             //cout << "fds "<< status<< "  " << xfer.rxCnt  << '\n';
             if (xfer.rxCnt > 0){
-                cout << xfer.rxBuf << '\n';
+                cout << xfer.rxBuf << endl;
             }
             xfer.rxCnt = 0;
        }    
