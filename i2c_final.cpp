@@ -30,10 +30,12 @@ Note that an i2c_address of 0 may be used to close the BSC device and reassign t
 
 int main(){
     
-    gpioInitialise();
+    if (gpioInitialise()<0) 
+		return 1;
+    
     while(1){
 		bsc_xfer_t xfer;
-		xfer.control = (0x9<<16) | 0x305; // Set I2C slave Address to 0x9
+		xfer.control = (0x9<<16) | 0x205; // Set I2C slave Address to 0x9
 		xfer.txCnt = 0;
 		int status = bscXfer(&xfer);
 
