@@ -16,7 +16,7 @@
 int pi;
 
 //send 2 byte response. clyde protocol only
-/*
+
 void sendResponse(unsigned char* str, bsc_xfer_t * tPtr){
 	
 	printf("Sending response 0x%02x , 0x%02x \n", str[0], str[1]);
@@ -24,9 +24,9 @@ void sendResponse(unsigned char* str, bsc_xfer_t * tPtr){
 	tPtr->txCnt = 2;
 	bsc_i2c(pi, ADDR, tPtr);
 }
-*/
 
-/*
+
+
 void fillResponse(unsigned char msb, unsigned char lsb, unsigned char * response){
 	
 	printf("Setting response to 0x%02x , 0x%02x \n", msb, lsb);
@@ -34,9 +34,9 @@ void fillResponse(unsigned char msb, unsigned char lsb, unsigned char * response
 	response[1] = lsb;
 
 }
-*/
 
-/*
+
+
 //take in cmd array that has command code and parameter. modify response pointer to point to data you want to send back
 void mockTest(unsigned char *cmd, unsigned char* rsp){
 	
@@ -119,9 +119,9 @@ void mockTest(unsigned char *cmd, unsigned char* rsp){
 	}//switch
 
 }
-*/
 
-/*
+
+
 //method that gets called on I2c write activity
 void respond(int id, unsigned event, uint32_t tick){ 
 	
@@ -129,10 +129,12 @@ void respond(int id, unsigned event, uint32_t tick){
 		
 	int status;
 	bsc_xfer_t transfer;//struct that represents the transfer
+	transfer.control = (0x9<<16) | 0x205;
 	transfer.txCnt = 0;// 0 bytes to send. just want to read for now
+	printf("\n");
 	if((status=bsc_i2c(pi, ADDR, &transfer))>=0){//basic IO command. Just updates transfer buffer
 		
-		printf("Received %d bytes\n", transfer.rxCnt);
+		printf("Received %d bytes buf %s\n", transfer.rxCnt, transfer.rxBuf);
 		if(transfer.rxCnt > 0){//if there is data to read
 			
 			unsigned char command[2];
@@ -150,7 +152,7 @@ void respond(int id, unsigned event, uint32_t tick){
 
 	puts("callback exiting"); 
 }
-*/
+
 
 // estrutura
 /*
@@ -191,8 +193,8 @@ int main(void){
 	}
 	
 	puts("Connection obtained\n");
-
-	int event = event_callback(pi, 31u, respond); //31u = value for i2c activity, respond = method to call on activity
+	//int eventSetFunc(31, respond);
+	int event = event_callback(pi,31u, respond); //31u = value for i2c activity, respond = method to call on activity
 	bsc_i2c(pi, ADDR, &transfer); //initiate slave connection
 	
 	size_t size;
