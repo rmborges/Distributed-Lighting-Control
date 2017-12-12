@@ -59,7 +59,7 @@ private:
 			{
 				std::cout << "Received: " << line << "\n";
 			}
-			std::cout << "passei no deadline" << std::endl;
+			//std::cout << "passei no deadline" << std::endl;
 			start_read();
 		}
 		else
@@ -138,7 +138,7 @@ public:
 			return;
 
     // SEM O SHARED_FROM_THIS
-		std::cout << "enviei heartbeat" << std::endl;
+	//	std::cout << "enviei heartbeat" << std::endl;
     //boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
     //  boost::bind(&tcp_connection::handle_write, this, _1));
 
@@ -180,6 +180,15 @@ public:
 			boost::bind(
 				&tcp_connection::handle_read, shared_from_this(),
 				boost::asio::placeholders::error));
+
+		/*std::cout << "Received from client: ";
+		while ( input_buffer_.sgetc() != EOF )
+		{
+			char ch = input_buffer_.sbumpc();
+			std::cout << ch;
+		}
+		std::cout << " "  << std::endl;*/
+
 	}
 };
 
