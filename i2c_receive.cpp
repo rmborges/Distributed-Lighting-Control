@@ -31,7 +31,7 @@ Note that an i2c_address of 0 may be used to close the BSC device and reassign t
 i2c_receive::i2c_receive()
 {
 
-	this->read_from_i2c();
+	read_from_i2c();
 }
 
 int i2c_receive::read_from_i2c()
