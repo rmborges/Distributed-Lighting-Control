@@ -5,6 +5,9 @@
 #include <iostream>
 #include <unistd.h>
 #include "serial_send.h"
+#include "i2c_receive.h"
+#include "messages.h"
+#include "arduino.h"
 
 #define USB "/dev/ttyACM0"
 

@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+#include "i2c_receive.h"
+
 
 /* FUNÇÃO bscXfer
 
