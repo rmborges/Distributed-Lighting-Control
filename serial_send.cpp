@@ -1,40 +1,38 @@
-#include <unistd.h>
-#include <iostream>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include "serial_send.h"
 
-using boost::asio::deadline_timer;
-using boost::asio::ip::tcp;
-using namespace std;
-using namespace boost::asio;
-
-#define USB "/dev/ttyACM0"
-
-int main(void){
+serial_send::serial_send(io_service& io_serial)
+{
+	start_serial(io_serial, sp); // CONFIRMAR APONTADOR
+}
 	
-	boost::asio::io_service io_serial;
+void serial_send::start_serial(io_service& io_serial, serial_port *sp)
+{
 	boost::system::error_code error_serial;
 
-	serial_port *sp;
+	
 	sp = new serial_port(io_serial);
 	sp->open(USB, error_serial);
 	if (error_serial){
-		cout << "Error opening serial port" << endl;
-		exit(-1);
+		std::cout << "Error opening serial port" << std::endl;
+		//exit(-1);
 	}
+
 	sp->set_option(serial_port_base::baud_rate(9600), error_serial);
 	if (error_serial) {
-		cout << "Error opening serial port" << endl;
-		exit(-1);
-	}
+		std::cout << "Error opening serial port" << std::endl;
+		//exit(-1);
+	} 
 
 	while(1){
-		write( *sp, boost::asio::buffer("mandei cenas\n") );
+		write(*sp, boost::asio::buffer("mandei cenas\n"));
 		usleep( 1000000 ); //1 sec
-		cout<< "enviei: mandei cenas" << endl<<endl;
+		std::cout<< "enviei : mandei cenas" << std::endl << std::endl;
 	}
-	
 
 	sp->close();
+}
 
+void serial_send::serial_write(std::string message)
+{
+	write(*sp, boost::asio::buffer("mandei cenas\n"));
 }

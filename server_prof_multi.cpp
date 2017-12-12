@@ -4,6 +4,9 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <unistd.h>
+#include "serial_send.h"
+
+#define USB "/dev/ttyACM0"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -180,13 +183,6 @@ public:
 	}
 };
 
-
-
-
-
-
-
-
 class tcp_server {
 	public: tcp_server(io_service&	io)
 	:	acceptor_(io,	tcp::endpoint(tcp::v4(),	10000))		{
@@ -223,11 +219,12 @@ int main()		{
 	{
 		io_service io;
 		tcp_server server(io);
+		serial_send serial_write(io);
 		io.run();
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "Exception: " << e.what() << std::endl;
+		std::cerr << "Exception:  " << e.what() << std::endl;
 	}
 
 	return 0;
