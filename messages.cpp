@@ -1,7 +1,9 @@
 #include "messages.h"
 
+messages::messages();
+
 messages::print_message(std::string message){
 
-	cout << message << endl;
+	std::cout << message << std::endl;
 
 }

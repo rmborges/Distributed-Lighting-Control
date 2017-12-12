@@ -7,7 +7,6 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <unistd.h>
-#include "serial_send.h"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -16,6 +15,8 @@ using boost::asio::deadline_timer;
 class messages {
 
 public:
+	messages();
+private:
 	void print_message(std::string message);
 
 
