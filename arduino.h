@@ -40,8 +40,8 @@ private:
 	double acc_ener_system;
 	double acc_comfort_error_desk;
 	double acc_comfort_var_desk;
-	double[BUFFER_SIZE] illuminance_min;
-	double[BUFFER_SIZE] duty_cycle_min;
+	std::vector<double> illuminance_min;
+	std::vector<double> duty_cycle_min;
 
 
 
