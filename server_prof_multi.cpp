@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
 #include "serial_send.h"
 #include "i2c_receive.h"
 #include "messages.h"
@@ -225,15 +226,20 @@ private:
 };
 
 
+void teste(){i2c_receive i2c();}
 
 int main()		{
 	try
 	{
+	//i2c_receive i2c();
+		thread t1 {teste};
 		io_service io;
 		tcp_server server(io);
 		serial_send serial_write(io);
 		io.run();
-		i2c_receive i2c();
+		
+		t1.join();
+		
 	}
 	catch (std::exception& e)
 	{

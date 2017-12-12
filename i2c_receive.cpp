@@ -36,7 +36,7 @@ i2c_receive::i2c_receive()
 
 int i2c_receive::read_from_i2c()
 {
-	cout << ENTREI NO I2C << endl << endl;
+	cout << "ENTREI NO I2C" << endl << endl;
 	
 	char i2c_msg[MSG_SIZE];
 
