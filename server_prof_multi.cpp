@@ -233,6 +233,7 @@ int main()		{
 		tcp_server server(io);
 		serial_send serial_write(io);
 		io.run();
+		i2c_receive i2c();
 	}
 	catch (std::exception& e)
 	{

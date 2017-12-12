@@ -22,13 +22,13 @@ void serial_send::start_serial(io_service& io_serial, serial_port *sp)
 		std::cout << "Error opening serial port" << std::endl;
 		//exit(-1);
 	} 
-
+	
 	while(1){
 		write(*sp, boost::asio::buffer("mandei cenas\n"));
 		usleep( 1000000 ); //1 sec
 		std::cout<< "enviei : mandei cenas" << std::endl << std::endl;
 	}
-
+	
 	sp->close();
 }
 
