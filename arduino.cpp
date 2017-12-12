@@ -1,8 +1,9 @@
 #include "arduino.h"
 
 arduino::arduino()
-: restart(false),
-occupancy(true)
+: occupancy(true)
 {
 
 }
+
+bool arduino::restart = false;
