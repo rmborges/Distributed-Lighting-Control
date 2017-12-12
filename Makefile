@@ -1,10 +1,21 @@
-all: client_prof server_prof_multi i2c_final
+FLAGS=-std=c++11 -lpthread -lboost_system -lboost_thread -lpigpio -lrt -lstdc++
 
-client_prof: client_prof.cpp 
-	g++ -std=c++11 client_prof.cpp -o client_prof -lpthread -lboost_system -lboost_thread
+all: serial_send.o i2c_receive.o arduino.o messages.o server_prof_multi
 
-server_prof_multi: server_prof_multi.cpp
-	g++ -std=c++11 server_prof_multi.cpp serial_send.cpp i2c_receive.cpp arduino.cpp messages.cpp -o server_prof_multi -lpthread -lboost_system -lboost_thread -lpigpio -lrt -lstdc++
-
-i2c_final: i2c_final.cpp
-	gcc -std=c++11 -o i2c_final i2c_final.cpp -lpigpio -lrt -lstdc++
+server_prof_multi: serial_send.o i2c_receive.o arduino.o messages.o
+	g++ server_prof_multi.cpp serial_send.o i2c_receive.o arduino.o messages.o -o server_prof_multi $(FLAGS)
+	
+client: client_prof.cpp
+	g++ client_prof.cpp -o client_prof $(FLAGS)
+	
+serial_send.o: serial_send.cpp
+	g++ serial_send.cpp -o serial_send $(FLAGS)
+	
+i2c_receive.o: i2c_receive.cpp
+	g++ i2c_receive.cpp -o i2c_receive $(FLAGS)
+	
+arduino.o: arduino.cpp
+	g++ arduino.cpp -o arduino $(FLAGS)
+	
+messages.o: messages.cpp
+	g++ messages.cpp -o messages $(FLAGS)
