@@ -231,9 +231,9 @@ void teste(){i2c_receive i2c;}
 int main()		{
 	try
 	{
-	//i2c_receive i2c;
+		//i2c_receive i2c;
 	
-		thread t1 {teste};
+		thread t1 {&i2c_receive::read_from_i2c, i2c_receive()};
 		io_service io;
 		tcp_server server(io);
 		serial_send serial_write(io);

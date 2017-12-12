@@ -12,8 +12,7 @@ class i2c_receive {
 
 public:
 	i2c_receive();
-
-private:	
+	
 	int read_from_i2c();
 
 };
