@@ -24,9 +24,9 @@ void serial_send::start_serial(io_service& io_serial, serial_port *sp)
 	} 
 	
 	while(1){
-		write(*sp, boost::asio::buffer("mandei cenas\n"));
+		write(*sp, boost::asio::buffer("1234567890123456\n"));
 		usleep( 1000000 ); //1 sec
-		std::cout<< "enviei : mandei cenas" << std::endl << std::endl;
+		//std::cout<< "enviei : mandei cenas" << std::endl << std::endl;
 	}
 	
 	sp->close();

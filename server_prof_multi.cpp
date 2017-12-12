@@ -226,19 +226,20 @@ private:
 };
 
 
-void teste(){i2c_receive i2c();}
+void teste(){i2c_receive i2c;}
 
 int main()		{
 	try
 	{
-	//i2c_receive i2c();
+	//i2c_receive i2c;
+	
 		thread t1 {teste};
 		io_service io;
 		tcp_server server(io);
 		serial_send serial_write(io);
 		io.run();
 		
-		t1.join();
+		//t1.join();
 		
 	}
 	catch (std::exception& e)
