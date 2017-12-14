@@ -1,4 +1,3 @@
-
 #include <unistd.h>
 #include <iostream>
 #include <boost/asio.hpp>
@@ -13,12 +12,12 @@ class client
 {
 public:
   client(boost::asio::io_service& io_service)
-  : stopped_(false),
-  socket_(io_service),
-  deadline_(io_service),
-  heartbeat_timer_(io_service),
-  input_(io_service, ::dup(STDIN_FILENO)),
-  console_buffer_(100000)
+    : stopped_(false),
+      socket_(io_service),
+      deadline_(io_service),
+      heartbeat_timer_(io_service),
+      input_(io_service, ::dup(STDIN_FILENO)),
+      console_buffer_(100000)
   {
   }
 
@@ -53,6 +52,7 @@ public:
 private:
   void start_connect(tcp::resolver::iterator endpoint_iter)
   {
+    std::cout << "start_connect" << std::endl;
     if (endpoint_iter != tcp::resolver::iterator())
     {
       std::cout << "Trying " << endpoint_iter->endpoint() << "...\n";
@@ -62,8 +62,8 @@ private:
 
       // Start the asynchronous connect operation.
       socket_.async_connect(endpoint_iter->endpoint(),
-        boost::bind(&client::handle_connect,
-          this, _1, endpoint_iter));
+          boost::bind(&client::handle_connect,
+            this, _1, endpoint_iter));
     }
     else
     {
@@ -73,8 +73,9 @@ private:
   }
 
   void handle_connect(const boost::system::error_code& ec,
-    tcp::resolver::iterator endpoint_iter)
+      tcp::resolver::iterator endpoint_iter)
   {
+    std::cout << "handle_connect" << std::endl;
     if (stopped_)
       return;
 
@@ -117,12 +118,13 @@ private:
 
   void start_read()
   {
+    std::cout << "start_read" << std::endl;
     // Set a deadline for the read operation.
     deadline_.expires_from_now(boost::posix_time::seconds(30));
 
     // Start an asynchronous operation to read a newline-delimited message.
     boost::asio::async_read_until(socket_, input_buffer_, '\n',
-      boost::bind(&client::handle_read, this, _1));
+        boost::bind(&client::handle_read, this, _1));
   }
 
   void handle_read(const boost::system::error_code& ec)
@@ -143,7 +145,6 @@ private:
         std::cout << "Received: " << line << "\n";
       }
 
-      std::cout << "passei no deadline" << std::endl;
       start_read();
     }
     else
@@ -161,7 +162,7 @@ private:
 
     // Start an asynchronous operation to send a heartbeat message.
     boost::asio::async_write(socket_, boost::asio::buffer("\n", 1),
-      boost::bind(&client::handle_write, this, _1));
+        boost::bind(&client::handle_write, this, _1));
   }
 
   void handle_write(const boost::system::error_code& ec)
@@ -208,60 +209,65 @@ private:
   
   void start_read_console()
   {
-   boost::asio::async_read_until(input_, console_buffer_, '\n', 
-     boost::bind(&client::handle_read_console, this, _1, _2));
- }
-
- void handle_read_console(const boost::system::error_code& ec, std::size_t length)
- { 
-  if (stopped_)
-    return;
-
-  if (!ec)
-  {
+     boost::asio::async_read_until(input_, console_buffer_, '\n', 
+             boost::bind(&client::handle_read_console, this, _1, _2));
+  }
+  
+  void handle_read_console(const boost::system::error_code& ec, std::size_t length)
+  { 
+    if (stopped_)
+      return;
+    
+    if (!ec)
+    {
       // Extract the newline-delimited message from the buffer.
-    std::string line, terminated_line;
-    std::istream is(&console_buffer_);
-    std::getline(is, line);
+      std::string line, terminated_line;
+      std::istream is(&console_buffer_);
+      std::getline(is, line);
 
       // Empty messages are heartbeats and so ignored.
-    if (!line.empty())
-    {
-      std::cout << "Sending: " << line << "\n" << std::endl;
-      terminated_line = line + std::string("\n");
-      std::size_t n = terminated_line.size();
-      terminated_line.copy(send_buffer_, n);
-      boost::asio::async_write(socket_, boost::asio::buffer(send_buffer_,n), 
-       boost::bind(&client::handle_send, this, _1, _2));
+      if (!line.empty())
+      {
+        std::cout << "Sending: " << line << "\n";
+        terminated_line = line + std::string("\n");
+        std::size_t n = terminated_line.size();
+        terminated_line.copy(send_buffer_, n);
+        boost::asio::async_write(socket_, boost::asio::buffer(send_buffer_,n), 
+           boost::bind(&client::handle_send, this, _1, _2));
+        
+      }
+      /*if (length != 0)
+      {
+        boost::asio::async_write(socket_, console_buffer_, 
+           boost::bind(&client::handle_send, this, _1, _2));
+      }*/
 
+      start_read_console();
     }
+    else
+    {
+      std::cout << "Error on handle_read_console: " << ec.message() << "\n";
 
-    start_read_console();
+      stop();
+    }
   }
-  else
+  void handle_send(const boost::system::error_code& ec, std::size_t length)
   {
-    std::cout << "Error on handle_read_console: " << ec.message() << "\n";
+    if (stopped_)
+      return;
+    
+    if (!ec)
+    {
+      std::cout << "Sent " << length << " bytes" << std::endl;
+    }
+    else
+    {
+      std::cout << "Error on handle_send: " << ec.message() << "\n";
 
-    stop();
+      stop();
+    }
   }
-}
-void handle_send(const boost::system::error_code& ec, std::size_t length)
-{
-  if (stopped_)
-    return;
-
-  if (!ec)
-  {
-    std::cout << "Sent " << length << " bytes" << std::endl;
-  }
-  else
-  {
-    std::cout << "Error on handle_send: " << ec.message() << "\n";
-
-    stop();
-  }
-}
-
+  
 
 private:
   bool stopped_;
@@ -300,4 +306,3 @@ int main(int argc, char* argv[])
 
   return 0;
 }
-
