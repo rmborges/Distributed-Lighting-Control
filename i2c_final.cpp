@@ -45,6 +45,8 @@ int main(){
 				if (xfer.rxCnt > 0){
 					cout << xfer.rxBuf << endl;
 				}
+				xfer.rxCnt=0;
+				memset(&xfer.rxBuf,0,sizeof(xfer.rxBuf));
 		   
 		}
 	}

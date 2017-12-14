@@ -5,6 +5,6 @@ messages::messages()
 
 void messages::print_message(std::string message){
 
-	std::cout << message << std::endl;
+	std::cout << "no messafes: "<< message << std::endl;
 
 }

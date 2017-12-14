@@ -1,5 +1,7 @@
 #include <pigpio.h>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 using namespace std;
 
 #include "i2c_receive.h"
@@ -56,6 +58,7 @@ int i2c_receive::read_from_i2c()
 				if (xfer.rxCnt > 0){
 					cout << xfer.rxBuf << endl;
 				}
+				memset(&xfer.rxBuf,0,sizeof(xfer.rxBuf));
 		   
 		}
 	}

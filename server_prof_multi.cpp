@@ -61,9 +61,9 @@ private:
       		// Empty messages are heartbeats and so ignored.
 			if (!line.empty())
 			{
-				std::cout << "Received: " << line << "\n";
+				std::cout << "Received:: " << line;
 			}
-			memset(line,0,sizeof(line));
+			memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
 			start_read();
 		}
@@ -171,21 +171,21 @@ public:
 			boost::bind(&tcp_connection::handle_read,
 				shared_from_this(),boost::asio::placeholders::error));
 		*/
-		/*async_read_until(socket_, input_buffer_, '\n',
+		/*async_read_until(socket_, input_buffer_
+		, '\n',
 			boost::bind(&tcp_connection::handle_read,
 				shared_from_this(),boost::asio::placeholders::error));*/
 
 
-
+memset(&input_buffer_,0,sizeof(input_buffer_));
 	// Set a deadline for the read operation.
 		deadline_.expires_from_now(boost::posix_time::seconds(30));
-
     // Start an asynchronous operation to read a newline-delimited message.
 		boost::asio::async_read_until(socket_, input_buffer_, '\n',
 			boost::bind(
 				&tcp_connection::handle_read, shared_from_this(),
 				boost::asio::placeholders::error));
-
+	
 		/*std::cout << "Received from client: ";
 		while ( input_buffer_.sgetc() != EOF )
 		{
@@ -199,7 +199,7 @@ public:
 
 class tcp_server {
 	public: tcp_server(io_service&	io)
-	:	acceptor_(io,	tcp::endpoint(tcp::v4(),	10000))		{
+	:	acceptor_(io,	tcp::endpoint(tcp::v4(),10000	))	{
 		start_accept();
 	}
 
