@@ -45,7 +45,13 @@ public:
 
 	//calculations
 	void calc_inst_power_desk();
-	void calc_inst_power_system();
+	float calc_inst_power_system(std::vector<arduino> arduino_list);
+	void update_acc_ener_desk(float energy_desk);
+	float calc_acc_ener_system(std::vector<arduino> arduino_list);
+	void update_acc_comfort_error_desk(float comf_desk);
+	float calc_acc_comfort_error_system(std::vector<arduino> arduino_list);
+	void update_acc_comfort_var_desk(float comf_desk_var);
+	float calc_acc_comfort_var_system(std::vector<arduino> arduino_list);
 
 private:
 	// common to all arduinos
