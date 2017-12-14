@@ -63,6 +63,7 @@ private:
 			{
 				std::cout << "Received: " << line << "\n";
 			}
+			memset(line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
 			start_read();
 		}
