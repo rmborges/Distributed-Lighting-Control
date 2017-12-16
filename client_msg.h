@@ -1,5 +1,5 @@
-#ifndef SERIAL_H_
-#define SERIAL_H_
+#ifndef CLIENT_MSG_H_
+#define CLIENT_MSG_H_
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -7,24 +7,19 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <unistd.h>
-#include "serial_send.h"
-
-#define USB "/dev/ttyACM0"
 
 using namespace boost::asio;
 using ip::tcp;
 using boost::asio::deadline_timer;
 
-class serial_send {
+class client_msg {
 
 public:
-	serial_send(io_service&	io_serial);
+	client_msg();
 
-private:	
-	void start_serial(io_service& io_serial);
+	void print_message(std::string message);
 
-	void serial_write(std::string message);
-	serial_port *sp;
+
 };
 
 #endif

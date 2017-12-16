@@ -2,14 +2,16 @@
 
 serial_send::serial_send(io_service& io_serial)
 {
-	start_serial(io_serial, sp); // CONFIRMAR APONTADOR
+	start_serial(io_serial); // CONFIRMAR APONTADOR
 }
 	
-void serial_send::start_serial(io_service& io_serial, serial_port *sp)
+void serial_send::start_serial(io_service& io_serial)
 {
+	//start_serial(io_serial);
+	std::cout<< "START SERIAL\n" << std::endl;
 	boost::system::error_code error_serial;
-
 	
+
 	sp = new serial_port(io_serial);
 	sp->open(USB, error_serial);
 	if (error_serial){
@@ -26,7 +28,7 @@ void serial_send::start_serial(io_service& io_serial, serial_port *sp)
 	while(1){
 		write(*sp, boost::asio::buffer("1234567890123456\n"));
 		usleep( 1000000 ); //1 sec
-		//std::cout<< "enviei : mandei cenas" << std::endl << std::endl;
+		std::cout<< "enviei : serial" << std::endl << std::endl;
 	}
 	
 	sp->close();

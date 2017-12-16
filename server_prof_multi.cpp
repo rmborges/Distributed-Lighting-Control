@@ -7,7 +7,7 @@
 #include <thread>
 #include "serial_send.h"
 #include "i2c_receive.h"
-#include "messages.h"
+#include "client_msg.h"
 #include "arduino.h"
 
 #define USB "/dev/ttyACM0"
@@ -29,6 +29,7 @@ private:
 
 	void handle_write(const boost::system::error_code& error)
 	{
+		std::cout << "handle write"<< std::endl;
 		if (stopped_)
 			return;
 
@@ -48,6 +49,7 @@ private:
 
 	void handle_read(const boost::system::error_code& error)
 	{
+		std::cout << "\nhandle read "<< std::endl;
 		if (stopped_)
 			return;
 
@@ -62,9 +64,9 @@ private:
 			if (!line.empty())
 			{
 				std::cout << "Received:: " << line;
-				messages.print_message(line);
+				//messages.print_message(line);
 			}
-			memset(&line,0,sizeof(line));
+			//memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
 			start_read();
 		}
@@ -178,7 +180,7 @@ public:
 				shared_from_this(),boost::asio::placeholders::error));*/
 
 
-memset(&input_buffer_,0,sizeof(input_buffer_));
+
 	// Set a deadline for the read operation.
 		deadline_.expires_from_now(boost::posix_time::seconds(30));
     // Start an asynchronous operation to read a newline-delimited message.
@@ -228,20 +230,44 @@ private:
 };
 
 
-void teste(){i2c_receive i2c;}
+io_service io1, io2;
+void teste(){serial_send serial_(io2);}
+
+
+void run_service1(){io1.run();
+	std::cout << "comecou server" << std::endl;
+	}
+
+void run_service2(){
+	io2.run();
+	}
 
 int main()		{
 	try
 	{
 		//i2c_receive i2c;
 	
-		thread t1 {&i2c_receive::read_from_i2c, i2c_receive()};
-		io_service io;
-		tcp_server server(io);
-		serial_send serial_write(io);
-		io.run();
 		
-		//t1.join();
+		tcp_server server(io1);
+		//serial_send serial_(io2);
+		std::cout << "fez server" << std::endl;
+		
+		std::cout << "run server" << std::endl;
+		
+		std::cout << "run serial" << std::endl;
+		std::thread t1 {&i2c_receive::read_from_i2c, i2c_receive()};
+		
+		std::thread t2 {run_service1};
+		
+		std::thread t3 {teste};
+		io2.run();
+		std::cout << "fez serial" << std::endl;
+		//run_service1();
+		t1.join();
+		//std::cout << "t1 join" << std::endl;
+		t2.join();
+			//std::cout << "t2 join" << std::endl;
+		t3.join();
 		
 	}
 	catch (std::exception& e)
