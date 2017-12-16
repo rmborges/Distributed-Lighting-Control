@@ -62,6 +62,7 @@ private:
 			if (!line.empty())
 			{
 				std::cout << "Received:: " << line;
+				messages.print_message(line);
 			}
 			memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
