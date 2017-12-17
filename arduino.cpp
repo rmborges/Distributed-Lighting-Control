@@ -1,7 +1,8 @@
 #include "arduino.h"
 
 arduino::arduino()
-: occupancy(true)
+: occupancy(true),
+num_obs(0)
 {}
 
 bool arduino::restart = false;
