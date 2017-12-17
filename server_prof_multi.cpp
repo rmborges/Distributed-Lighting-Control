@@ -53,6 +53,7 @@ private:
 	void handle_read(const boost::system::error_code& error)
 	{
 		serial_send msg_(io2);
+		client_msg msg_1;
 		std::cout << "\nhandle read "<< std::endl;
 		if (stopped_)
 			return;
@@ -69,7 +70,7 @@ private:
 			{
 				std::cout << "Received:: " << line;
 				//serial_.serial_write(line);
-			
+				msg_1.print_message(line);
 				msg_.serial_write(line);
 			}
 			//memset(&line,0,sizeof(line));
