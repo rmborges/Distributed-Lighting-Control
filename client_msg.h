@@ -17,7 +17,7 @@ class client_msg {
 public:
 	client_msg();
 
-	void print_message(std::string message);
+	void print_message(std::string message, char * msg_to_client);
 
 
 };

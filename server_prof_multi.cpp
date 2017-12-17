@@ -70,8 +70,11 @@ private:
 			{
 				std::cout << "Received:: " << line;
 				//serial_.serial_write(line);
-				msg_1.print_message(line);
+				char msg_send_client[100];
+				msg_1.print_message(line,msg_send_client);
 				msg_.serial_write(line);
+				std::cout << "send to client: " << msg_send_client << "\n";
+			
 			}
 			//memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
@@ -110,7 +113,7 @@ private:
 
 	tcp::socket socket_;
 	std::string msg_;
-	enum {max_length=1024};
+	enum {max_length=100};
 	char send_buffer_[max_length];
 	deadline_timer heartbeat_timer_;
 	boost::asio::streambuf input_buffer_;
@@ -195,7 +198,7 @@ public:
 			boost::bind(
 				&tcp_connection::handle_read, shared_from_this(),
 				boost::asio::placeholders::error));
-	
+
 		/*std::cout << "Received from client: ";
 		while ( input_buffer_.sgetc() != EOF )
 		{
@@ -243,17 +246,17 @@ void teste(){serial_send serial_(io2);}
 
 void run_service1(){io1.run();
 	std::cout << "comecou server" << std::endl;
-	}
+}
 
 void run_service2(){
 	io2.run();
-	}
+}
 
 int main()		{
 	try
 	{
 		//i2c_receive i2c;
-	
+
 		
 		tcp_server server(io1);
 		serial_send serial_(io2);
