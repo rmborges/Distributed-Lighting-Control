@@ -10,7 +10,7 @@
 #include "client_msg.h"
 #include "arduino.h"
 
-//#define USB "/dev/ttyACM0"
+//#define USB "/dev/ttyACM0" 
 
 using namespace boost::asio;
 using ip::tcp;
@@ -18,6 +18,7 @@ using boost::asio::deadline_timer;
 
 io_service io1, io2;
 
+//std::vector<arduino*> arduino_list;
 
 class tcp_connection :		public
 boost::enable_shared_from_this<tcp_connection>	{

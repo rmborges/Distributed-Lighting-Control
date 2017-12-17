@@ -19,21 +19,23 @@ using boost::asio::deadline_timer;
 class arduino {
 
 public:
-	arduino();
+	arduino(std::string ard_id);
 
 	//setters
 	//void set_restart(bool res) {restart = res;}
 	//void set_occupancy(bool occup) {occupancy = occup;}
 
+	void parse_i2c(std::string i2c_msg);
+
 	//calculations
 	void calc_inst_power_desk();
-	float calc_inst_power_system(std::vector<arduino> arduino_list);
+	float calc_inst_power_system(std::vector<arduino*> arduino_list);
 	void update_acc_ener_desk(float energy_desk);
-	float calc_acc_ener_system(std::vector<arduino> arduino_list);
+	float calc_acc_ener_system(std::vector<arduino*> arduino_list);
 	void update_acc_comfort_error_desk(float comf_desk);
-	float calc_acc_comfort_error_system(std::vector<arduino> arduino_list);
+	float calc_acc_comfort_error_system(std::vector<arduino*> arduino_list);
 	void update_acc_comfort_var_desk(float comf_desk_var);
-	float calc_acc_comfort_var_system(std::vector<arduino> arduino_list);
+	float calc_acc_comfort_var_system(std::vector<arduino*> arduino_list);
 
 //private:
 	// common to all arduinos
@@ -43,7 +45,7 @@ public:
 	static float acc_comfort_var_system;
 
 	//for each arduino
-	int arduino_ID; // ID do arduino
+	std::string arduino_ID; // ID do arduino
 	int num_obs; // numero de observaçoes recolhidas
 	float illuminance; //LDR
 	float duty_cycle; //PWM

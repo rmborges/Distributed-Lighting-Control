@@ -1,11 +1,11 @@
-#include <pigpio.h>
-#include <iostream>
-#include <stdio.h>
-#include <string.h>
-using namespace std;
-
 #include "i2c_receive.h"
 
+// Identificadores das mensagens do I2C (primeiro caracter)
+#define I2C_ID "I"
+
+using namespace std;
+
+std::vector<arduino*> arduino_list;
 
 /* FUNÇÃO bscXfer
 
@@ -37,8 +37,11 @@ i2c_receive::i2c_receive()
 	
 }
 
+//extern std::vector<arduino*> arduino_list;
+
 int i2c_receive::read_from_i2c()
 {
+	//extern std::vector<arduino*> arduino_list;
 	/*
 	#define BSC_FIFO_SIZE 30
 
@@ -55,10 +58,10 @@ int i2c_receive::read_from_i2c()
 	
 	char i2c_msg[MSG_SIZE];
 
-    if (gpioInitialise()<0) 
+	if (gpioInitialise()<0) 
 		return 1;
-    
-    while(1){
+
+	while(1){
 		bsc_xfer_t xfer;
 		xfer.control = (0x9<<16) | 0x205; // Set I2C slave Address to 0x9
 		xfer.txCnt = 0;
@@ -66,16 +69,34 @@ int i2c_receive::read_from_i2c()
 
 		if (status >= 0)
 		{
-	   
-				if (xfer.rxCnt > 0){
-					cout << "li " << xfer.rxCnt << " bytes\n";
-					cout << xfer.rxBuf << endl;
-				}
-				memset(&xfer.rxBuf,0,sizeof(xfer.rxBuf));
-		   
-		}
-	}
-    gpioTerminate();
 
-    return 0;
-} 
+			if (xfer.rxCnt > 0){
+				cout << xfer.rxBuf << endl;
+				string msg_arduino = string(xfer.rxBuf);
+				if (msg_arduino.find(I2C_ID) != string::npos) { // para verificar se msg tem identificador
+					bool ja_existe = false;
+					vector<string> strs;
+					boost::split(strs,msg_arduino, boost::is_any_of(" "));
+					string arduino_id = strs[1]; // ID do arduino que enviou a mensagem
+					if (::arduino_list.empty() == false) {
+						for (auto ard : arduino_list) {
+							if (ard->arduino_ID == arduino_id && ja_existe == false) {
+								ard->parse_i2c(msg_arduino);  // chama rotina que trata os dados
+								ja_existe = true;
+							}
+						}
+					}
+					if (ja_existe == false) {
+						cout << arduino_id << endl;
+						arduino *ard = new arduino(arduino_id);
+						arduino_list.push_back(ard);
+					}
+				}
+				//cout << "tenho " << ::arduino_list.size() << "!\n";
+			}
+			memset(&xfer.rxBuf,0,sizeof(xfer.rxBuf));
+		}
+	} 
+	gpioTerminate();
+	return 0;
+}

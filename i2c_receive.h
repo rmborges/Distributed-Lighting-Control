@@ -3,6 +3,11 @@
 
 #include <pigpio.h>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <boost/algorithm/string.hpp>
+#include "arduino.h"
+
 
 using namespace std;
 
