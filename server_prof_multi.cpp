@@ -10,11 +10,14 @@
 #include "client_msg.h"
 #include "arduino.h"
 
-#define USB "/dev/ttyACM0"
+//#define USB "/dev/ttyACM0"
 
 using namespace boost::asio;
 using ip::tcp;
 using boost::asio::deadline_timer;
+
+io_service io1, io2;
+
 
 class tcp_connection :		public
 boost::enable_shared_from_this<tcp_connection>	{
@@ -49,6 +52,7 @@ private:
 
 	void handle_read(const boost::system::error_code& error)
 	{
+		serial_send msg_(io2);
 		std::cout << "\nhandle read "<< std::endl;
 		if (stopped_)
 			return;
@@ -64,7 +68,9 @@ private:
 			if (!line.empty())
 			{
 				std::cout << "Received:: " << line;
-				//messages.print_message(line);
+				//serial_.serial_write(line);
+			
+				msg_.serial_write(line);
 			}
 			//memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;
@@ -230,7 +236,7 @@ private:
 };
 
 
-io_service io1, io2;
+
 void teste(){serial_send serial_(io2);}
 
 
@@ -249,7 +255,7 @@ int main()		{
 	
 		
 		tcp_server server(io1);
-		//serial_send serial_(io2);
+		serial_send serial_(io2);
 		std::cout << "fez server" << std::endl;
 		
 		std::cout << "run server" << std::endl;
@@ -259,15 +265,16 @@ int main()		{
 		
 		std::thread t2 {run_service1};
 		
-		std::thread t3 {teste};
-		io2.run();
+		//std::thread t3 {teste};
+		std::thread t4 {run_service2};
 		std::cout << "fez serial" << std::endl;
 		//run_service1();
 		t1.join();
 		//std::cout << "t1 join" << std::endl;
 		t2.join();
 			//std::cout << "t2 join" << std::endl;
-		t3.join();
+		//t3.join();
+		t4.join();
 		
 	}
 	catch (std::exception& e)

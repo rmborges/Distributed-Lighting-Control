@@ -39,6 +39,18 @@ i2c_receive::i2c_receive()
 
 int i2c_receive::read_from_i2c()
 {
+	/*
+	#define BSC_FIFO_SIZE 30
+
+	typedef struct
+	{
+	   uint32_t control;          
+	   int rxCnt;                 
+	   char rxBuf[BSC_FIFO_SIZE]; 
+	   int txCnt;                 
+	   char txBuf[BSC_FIFO_SIZE]; 
+	} bsc_xfer_t;
+	*/
 	cout << "ENTREI NO I2C" << endl << endl;
 	
 	char i2c_msg[MSG_SIZE];
@@ -56,6 +68,7 @@ int i2c_receive::read_from_i2c()
 		{
 	   
 				if (xfer.rxCnt > 0){
+					cout << "li " << xfer.rxCnt << " bytes\n";
 					cout << xfer.rxBuf << endl;
 				}
 				memset(&xfer.rxBuf,0,sizeof(xfer.rxBuf));

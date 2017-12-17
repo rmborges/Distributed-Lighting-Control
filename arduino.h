@@ -14,14 +14,16 @@ using namespace boost::asio;
 using ip::tcp;
 using boost::asio::deadline_timer;
 
+
+
 class arduino {
 
 public:
 	arduino();
 
 	//setters
-	void set_restart(bool res) {restart = res;}
-	void set_occupancy(bool occup) {occupancy = occup;}
+	//void set_restart(bool res) {restart = res;}
+	//void set_occupancy(bool occup) {occupancy = occup;}
 
 	//calculations
 	void calc_inst_power_desk();
@@ -58,9 +60,9 @@ public:
 	std::vector<float> duty_cycle_min;
 	/*std::vector<float> l_buffer;
 	std::vector<float> d_buffer;*/
-	boost::circular_buffer<float> l_buffer(BUFF_SIZE);
-	boost::circular_buffer<float> d_buffer(BUFF_SIZE);
-	boost::circular_buffer<float> time_buffer(BUFF_SIZE); // keeps arduino time instants
+	//boost::circular_buffer<float> l_buffer(3000);
+	//boost::circular_buffer<float> d_buffer(3000);
+	//boost::circular_buffer<float> time_buffer(3000); // keeps arduino time instants
 
 };
 

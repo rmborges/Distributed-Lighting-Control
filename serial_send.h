@@ -9,7 +9,8 @@
 #include <unistd.h>
 #include "serial_send.h"
 
-#define USB "/dev/ttyACM0"
+//#define USB "/dev/ttyACM0"
+#define USB "/dev/ttyUSB0"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -20,7 +21,7 @@ class serial_send {
 public:
 	serial_send(io_service&	io_serial);
 
-private:	
+	
 	void start_serial(io_service& io_serial);
 
 	void serial_write(std::string message);
