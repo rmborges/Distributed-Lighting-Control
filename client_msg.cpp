@@ -39,8 +39,8 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		int count = 0;
 		int pt_ard = -1;
 		for (auto ard : arduino_list) {
-			if (ard->arduino_ID.compare(strs[2])){
-				std::cout << "sou o arduino " << ard->arduino_ID << std::endl;
+			if (ard->arduino_ID.compare(strs[2])==0){
+				std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
 				count +=1;
 				pt_ard = std::stoi(strs[2]);
 				break;
