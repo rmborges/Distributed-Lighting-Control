@@ -87,7 +87,7 @@ private:
 				//char msg_send_client[100];
 				std::string msg_send_client;
 				msg_send_client = msg_1.print_message(line,msg_send_client);
-				msg_.serial_write(line);
+				//msg_.serial_write(line);
 				std::cout << "send to client: " << msg_send_client << "\n";
 
 
