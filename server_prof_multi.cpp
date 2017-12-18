@@ -51,6 +51,19 @@ private:
 		}
 	}
 
+	void handle_write_client(const boost::system::error_code& error)
+	{
+		std::cout << "handle write client"<< std::endl;
+		if (stopped_)
+			return;
+
+		if (error)
+		{
+			std::cout << "Error on message to client: " << error.message() << std::endl;
+		}
+		start_read();
+	}
+
 	void handle_read(const boost::system::error_code& error)
 	{
 		serial_send msg_(io2);
@@ -71,11 +84,22 @@ private:
 			{
 				std::cout << "Received:: " << line;
 				//serial_.serial_write(line);
-				char msg_send_client[100];
-				msg_1.print_message(line,msg_send_client);
+				//char msg_send_client[100];
+				std::string msg_send_client;
+				msg_send_client = msg_1.print_message(line,msg_send_client);
 				msg_.serial_write(line);
 				std::cout << "send to client: " << msg_send_client << "\n";
-			
+
+
+				async_write(socket_,buffer(msg_send_client),
+					boost::bind(&tcp_connection::handle_write_client,
+						shared_from_this(),boost::asio::placeholders::error)); 
+				/*std::string terminated_line = msg_send_client+std::string("\n");
+				std::size_t n = terminated_line.size();
+				terminated_line.copy(send_buffer_, n);
+				async_write(socket_,boost::asio::buffer(send_buffer_,n),
+					start_write, shared_from_this());*/
+				
 			}
 			//memset(&line,0,sizeof(line));
 			//std::cout << "passei no deadline" << std::endl;

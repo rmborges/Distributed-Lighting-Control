@@ -33,7 +33,7 @@ int getMilliSpan(int nTimeStart){
 
 
 void arduino::parse_i2c(std::string i2c_msg) {
-	std::cout << "parsing i2c\n";
+	//std::cout << "parsing i2c\n";
 	std::vector<std::string> strs;
 	boost::split(strs,i2c_msg,boost::is_any_of(" "));
 	//id lux pwm lower_bound ext_illuminance lux_ref
@@ -84,7 +84,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	acc_comfort_var_system = calc_acc_comfort_var_system(::arduino_list);
 	this->time_1 = getMilliCount();
 
-	std::cout << "lux + inst_power_system " << this->illuminance << " " << inst_power_system << "\n"; 
+	//std::cout << "lux + inst_power_system " << this->illuminance << " " << inst_power_system << "\n"; 
 }
 
 void arduino::calc_inst_power_desk() {

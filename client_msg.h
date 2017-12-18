@@ -11,7 +11,10 @@
 #include <string>
 #include <vector>
 #include "arduino.h"
+#include "serial_send.h"
 #include <algorithm>
+
+#define MSG_RESET "RESTART"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -22,7 +25,7 @@ class client_msg {
 public:
 	client_msg();
 
-	void print_message(std::string msg_from_client, char * msg_to_client);
+	std::string print_message(std::string msg_from_client, std::string msg_to_client);
 
 
 };

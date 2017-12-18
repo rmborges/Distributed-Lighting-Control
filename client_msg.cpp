@@ -5,7 +5,9 @@ client_msg::client_msg()
 
 extern std::vector<arduino*> arduino_list;
 
-void client_msg::print_message(std::string msg_from_client, char * msg_to_client){
+extern io_service io2;
+
+std::string client_msg::print_message(std::string msg_from_client, std::string msg_to_client){
 
 	char str_aux[100];
 	memset(str_aux,0,sizeof(str_aux));
@@ -17,9 +19,19 @@ void client_msg::print_message(std::string msg_from_client, char * msg_to_client
 	std::string cmd = strs[0];
 	if (cmd.compare("r") == 0) 
 	{
-		strcpy(msg_to_client, "ack");
+		msg_to_client = "ack";
 		//arduino.restart = true;
+		// RESTART - remover objetos arduino no RPi
+		for (auto it = arduino_list.begin(); it != arduino_list.end(); ) {
+			delete * it;  
+			it = arduino_list.erase(it);
+		}
+		// enviar comando pelo serial para RESTART
+		serial_send msg_(io2);
+		msg_.serial_write(MSG_RESET); // msg definida em client_msg.h
 	}
+
+
 	else if (cmd.compare("g") == 0)
 	{
 		//finds if strs[2] is a number
@@ -56,33 +68,33 @@ void client_msg::print_message(std::string msg_from_client, char * msg_to_client
 					flag = 0;
 				}*/
 				//sprintf(str_aux, "o %f %f",strs[1], flag);
-				break;
-				case 'L': 
+					break;
+					case 'L': 
 				//sprintf(str_aux, "L %f %f",strs[1], pt_ard->lower_bound);
-				break;
-				case 'O': 
+					break;
+					case 'O': 
 				//sprintf(str_aux, "O %f %f",strs[1], pt_ard->ext_illuminance);
-				break;
-				case 'r': 
+					break;
+					case 'r': 
 				//sprintf(str_aux, "r %f %f",strs[1], pt_ard->illuminance_ref);
-				break;
-				case 'p': 
+					break;
+					case 'p': 
 				//sprintf(str_aux, "p %f %f",strs[1], pt_ard->inst_power_desk);
-				break;
-				case 'e': 
+					break;
+					case 'e': 
 				//sprintf(str_aux, "e %f %f",strs[1], pt_ard->acc_ener_desk);
-				break;
-				case 'c': 
+					break;
+					case 'c': 
 				//sprintf(str_aux, "c %f %f",strs[1], pt_ard->acc_comfort_error_desk);
-				break;
-				case 'v': 
+					break;
+					case 'v': 
 				//sprintf(str_aux, "v %f %f",strs[1], pt_ard->acc_comfort_var_desk);
-				break;
+					break;
 
+
+				}
 
 			}
-
-		}
 		else //get data from all arduinos
 		{
 			switch(strs[1].at(0)){
@@ -118,7 +130,8 @@ void client_msg::print_message(std::string msg_from_client, char * msg_to_client
 			pt_ard->occupancy = true;
 		}
 		*/
-		strcpy(msg_to_client, "ack");
+		msg_to_client = "ack";
+
 
 	}else if (cmd.compare("b") == 0)
 	{
@@ -127,12 +140,15 @@ void client_msg::print_message(std::string msg_from_client, char * msg_to_client
 
 
 
-
+/*
 	if ( str_aux != 0 )
 	{
 		strcpy(msg_to_client, str_aux);
 	}else{
 		strcpy(msg_to_client, "oii, tudo bem?\n");
 	}
+*/
+	msg_to_client = "oiiii galera, tudo bem?\n";
 
+	return msg_to_client;
 }
