@@ -37,12 +37,12 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		//finds if strs[2] is a number
 		bool number = std::all_of(strs[2].begin(),strs[2].end(), ::isdigit);
 		int count = 0;
-		int pt_ard = -1;
+		arduino* pt_ard;
 		for (auto ard : arduino_list) {
 			if (ard->arduino_ID.compare(strs[2])==0){
 				std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
 				count +=1;
-				pt_ard = std::stoi(strs[2]);
+				pt_ard = ard;
 				break;
 			}
 		}
@@ -52,7 +52,8 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 
 			switch(strs[1].at(0)){
 				case 'l': 
-				//float carlos = arduino_list.at(pt_ard)->illuminance;
+				
+				msg_to_client = "l "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->illuminance);
 				//sprintf(str_aux, "l %s %f",strs[2], arduino_list.at(pt_ard)->illuminance);
 				break;
 				case 'd': 
@@ -148,7 +149,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		strcpy(msg_to_client, "oii, tudo bem?\n");
 	}
 */
-	msg_to_client = "oiiii galera, tudo bem?\n";
+	//msg_to_client = "oiiii galera, tudo bem?\n";
 
 	return msg_to_client;
 }
