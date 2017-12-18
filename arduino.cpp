@@ -3,7 +3,10 @@
 arduino::arduino(std::string ard_id)
 : occupancy(true),
 num_obs(0),
-arduino_ID(ard_id)
+arduino_ID(ard_id),
+l_buffer(3000),
+d_buffer(3000),
+time_buffer(3000)
 {}
 
 //bool arduino::restart = false;
