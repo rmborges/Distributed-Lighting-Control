@@ -7,6 +7,11 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <unistd.h>
+#include <boost/algorithm/string.hpp>
+#include <string>
+#include <vector>
+#include "arduino.h"
+#include <algorithm>
 
 using namespace boost::asio;
 using ip::tcp;
@@ -17,7 +22,7 @@ class client_msg {
 public:
 	client_msg();
 
-	void print_message(std::string message, char * msg_to_client);
+	void print_message(std::string msg_from_client, char * msg_to_client);
 
 
 };
