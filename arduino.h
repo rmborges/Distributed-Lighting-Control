@@ -50,6 +50,9 @@ public:
 	static float acc_comfort_error_system;
 	static float acc_comfort_var_system;
 
+	static float init_time;
+	static float elapsed_time;
+
 
 	//for each arduino
 	std::string arduino_ID; // ID do arduino   trocar para inteiro?----------------------

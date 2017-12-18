@@ -17,6 +17,8 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	std::vector<std::string> strs;
 	boost::split(strs,msg_from_client,boost::is_any_of(" "));
 	std::string cmd = strs[0];
+	int flag = -1;
+
 	if (cmd.compare("r") == 0) 
 	{
 		msg_to_client = "ack";
@@ -51,104 +53,101 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		{
 
 			switch(strs[1].at(0)){
-				case 'l': 
-				
+				case 'l': 		
 				msg_to_client = "l "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->illuminance);
-				//sprintf(str_aux, "l %s %f",strs[2], arduino_list.at(pt_ard)->illuminance);
 				break;
 				case 'd': 
-				//sprintf(str_aux, "d %f %f",strs[2], pt_ard->duty_cycle);
+				msg_to_client = "d "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->duty_cycle);
 				break;
 				case 'o': 
-				/*int flag = -1;
 				if (pt_ard->occupancy == true)
 				{
 					flag = 1;
 				}else if (pt_ard->occupancy == false)
 				{
 					flag = 0;
-				}*/
-				//sprintf(str_aux, "o %f %f",strs[1], flag);
-					break;
-					case 'L': 
-				//sprintf(str_aux, "L %f %f",strs[1], pt_ard->lower_bound);
-					break;
-					case 'O': 
-				//sprintf(str_aux, "O %f %f",strs[1], pt_ard->ext_illuminance);
-					break;
-					case 'r': 
-				//sprintf(str_aux, "r %f %f",strs[1], pt_ard->illuminance_ref);
-					break;
-					case 'p': 
-				//sprintf(str_aux, "p %f %f",strs[1], pt_ard->inst_power_desk);
-					break;
-					case 'e': 
-				//sprintf(str_aux, "e %f %f",strs[1], pt_ard->acc_ener_desk);
-					break;
-					case 'c': 
-				//sprintf(str_aux, "c %f %f",strs[1], pt_ard->acc_comfort_error_desk);
-					break;
-					case 'v': 
-				//sprintf(str_aux, "v %f %f",strs[1], pt_ard->acc_comfort_var_desk);
-					break;
-
-
 				}
+				msg_to_client = "o "+pt_ard->arduino_ID+" "+std::to_string(flag);
+				break;
+				case 'L': 
+				msg_to_client = "L "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->lower_bound);
+				break;
+				case 'O': 
+				msg_to_client = "O "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->ext_illuminance);
+				break;
+				case 'r': 
+				msg_to_client = "r "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->illuminance_ref);
+				break;
+				case 'p': 
+				msg_to_client = "p "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->inst_power_desk);
+				break;
+				case 'e': 
+				msg_to_client = "e "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->acc_ener_desk);
+				break;
+				case 'c': 
+				msg_to_client = "c "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->acc_comfort_error_desk);
+				break;
+				case 'v': 
+				msg_to_client = "v "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->acc_comfort_var_desk);
+				break;
 
 			}
+
+		}
 		else //get data from all arduinos
 		{
 			switch(strs[1].at(0)){
 				case 'p': 
-				//sprintf(str_aux, "p T %f", arduno.calc_inst_power_system(arduino_list))
+				msg_to_client = "p T "+std::to_string(pt_ard->inst_power_system);
 				break;
 				case 'e':
-				//sprintf(str_aux, "e T %f", arduno.calc_acc_ener_system(arduino_list)) 
+				msg_to_client = "e T "+std::to_string(pt_ard->acc_ener_system);
 				break;
 				case 'c': 
-				//sprintf(str_aux, "e T %f", arduno.calc_acc_comfort_error_system(arduino_list)) 
+				msg_to_client = "c T "+std::to_string(pt_ard->acc_comfort_error_system);
 				break;
-				case 'v': 
-				//sprintf(str_aux, "v T %f", arduno.calc_acc_comfort_var_system(arduino_list)) 
+				case 'v':
+				msg_to_client = "v T "+std::to_string(pt_ard->acc_comfort_var_system); 
 				break;
 			}
 		}
 	}
 	else if (cmd.compare("s") == 0)
 	{
-		/*auto pt_ard;
+		arduino* pt_ard_s;
 		for (auto ard : arduino_list) {
-			if (ard->arduino_ID == strs[2]){
-				count +=1;
-				pt_ard = ard;
+			if (ard->arduino_ID.compare(strs[2])==0){
+				pt_ard_s = ard;
 				break;
 			}
 		}
-		if (strs[2] == '0')
+		if (strs[2].compare("0") == 0)
 		{
-			pt_ard->occupancy = false;
+			pt_ard_s->occupancy = false;
 		}else{
-			pt_ard->occupancy = true;
+			pt_ard_s->occupancy = true;
 		}
-		*/
+		
 		msg_to_client = "ack";
 
 
-	}else if (cmd.compare("b") == 0)
+	}
+	else if (cmd.compare("b") == 0)
 	{
 		//para continuar----------------------------
 	}
-
-
-
-/*
-	if ( str_aux != 0 )
+	else if (cmd.compare("c") == 0)
 	{
-		strcpy(msg_to_client, str_aux);
-	}else{
-		strcpy(msg_to_client, "oii, tudo bem?\n");
+		//para continuar----------------------------
 	}
-*/
+	else if (cmd.compare("d") == 0)
+	{
+		//para continuar----------------------------
+		msg_to_client = "ack";
+	}
+
+
+
 	//msg_to_client = "oiiii galera, tudo bem?\n";
 
 	return msg_to_client;

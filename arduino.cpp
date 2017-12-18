@@ -3,6 +3,7 @@
 arduino::arduino(std::string ard_id)
 : occupancy(true),
 num_obs(0),
+transient(1),
 arduino_ID(ard_id),
 l_buffer(3000),
 d_buffer(3000),
@@ -16,6 +17,8 @@ float arduino::inst_power_system = 0;
 float arduino::acc_ener_system = 0;
 float arduino::acc_comfort_error_system = 0;
 float arduino::acc_comfort_var_system = 0;
+float arduino::init_time = 0;
+float arduino::elapsed_time = 0;
 
 //codigo de http://www.cplusplus.com/forum/general/43203/
 int getMilliCount(){
@@ -28,6 +31,7 @@ int getMilliSpan(int nTimeStart){
 	int nSpan = getMilliCount() - nTimeStart;
 	if(nSpan < 0)
 		nSpan += 0x100000 * 1000;
+	std::cout << nSpan << "\n";
 	return nSpan;
 }
 
@@ -38,6 +42,14 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	boost::split(strs,i2c_msg,boost::is_any_of(" "));
 	//id lux pwm lower_bound ext_illuminance lux_ref
 
+	if (this->num_obs == 0) {
+		init_time = getMilliCount();
+	}
+	else {
+		elapsed_time = getMilliSpan(init_time);
+	}
+		
+
 	if (this->num_obs > 1){
 		this->prev2_duty_cycle = this->prev_duty_cycle;
 		this->prev_delta_time = this->delta_time;
@@ -46,8 +58,9 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	if(this->num_obs > 0){
 		this->prev_duty_cycle = this->duty_cycle;
 		this->delta_time = getMilliSpan(this->time_1);
+		//std::cout << this->delta_time << "\n";
 	}
-
+	std::cout << "fora " << this->delta_time << "\n";
 	std::string::size_type sz;
 
 	this->illuminance = std::stof(strs[1], &sz);
@@ -65,16 +78,17 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	calc_inst_power_desk();
 	update_acc_ener_desk();
 
-	if (!(this->transient))
+	if (this->transient == 0)
 	{
 		this->num_obs += 1;
 		update_acc_comfort_error_desk();
 		update_acc_comfort_var_desk();
 	}else{
 		this->time_transient = getMilliSpan(this->prev_time_transient);
+		//std::cout << "time_transient " << this->time_transient << "\n";
 		if (this->time_transient > 100)
 		{
-			this->transient = 1;
+			this->transient = 0;
 		}
 	}
 	
@@ -84,7 +98,13 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	acc_comfort_var_system = calc_acc_comfort_var_system(::arduino_list);
 	this->time_1 = getMilliCount();
 
-	//std::cout << "lux + inst_power_system " << this->illuminance << " " << inst_power_system << "\n"; 
+	//this->l_buffer.push_back(this->illuminance);
+	this->l_buffer.push_back(this->delta_time);
+	this->d_buffer.push_back(this->duty_cycle);
+	this->time_buffer.push_back(this->time_1);
+
+	//std::cout << "l_buffer: " << this->l_buffer.back() << " d_buffer " << this->d_buffer.back() << " time_buffer " << this->time_buffer.back() << "\n"; 
+	std::cout << "num_obs " << this->num_obs << " elapsed_time " << elapsed_time << "\n";
 }
 
 void arduino::calc_inst_power_desk() {
