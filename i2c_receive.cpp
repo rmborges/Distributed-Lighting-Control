@@ -83,6 +83,7 @@ int i2c_receive::read_from_i2c()
 							if (ard->arduino_ID == arduino_id && ja_existe == false) {
 								//ard->parse_i2c(msg_arduino);  // chama rotina que trata os dados
 								ard->parse_i2c("1 150 103.120 60.2 25.14 20");
+								ard->parse_i2c("1 159 180 10.5 5.54 80");
 								ja_existe = true;
 							}
 						}
