@@ -9,6 +9,11 @@
 #include <unistd.h>
 #include <vector>
 #include <boost/circular_buffer.hpp>
+#include <boost/algorithm/string.hpp>
+
+#include <cstdlib> //tempo
+#include <sys/timeb.h>
+
 
 using namespace boost::asio;
 using ip::tcp;
@@ -30,23 +35,35 @@ public:
 	//calculations
 	void calc_inst_power_desk();
 	float calc_inst_power_system(std::vector<arduino*> arduino_list);
-	void update_acc_ener_desk(float energy_desk);
+	void update_acc_ener_desk();
 	float calc_acc_ener_system(std::vector<arduino*> arduino_list);
-	void update_acc_comfort_error_desk(float comf_desk);
+	void update_acc_comfort_error_desk();
 	float calc_acc_comfort_error_system(std::vector<arduino*> arduino_list);
-	void update_acc_comfort_var_desk(float comf_desk_var);
+	void update_acc_comfort_var_desk();
 	float calc_acc_comfort_var_system(std::vector<arduino*> arduino_list);
 
 //private:
 	// common to all arduinos
 	//static bool restart; // necessário? ou enviar so mensagem?
 	static float inst_power_system;
+	static float acc_ener_system;
 	static float acc_comfort_error_system;
 	static float acc_comfort_var_system;
 
+
 	//for each arduino
-	std::string arduino_ID; // ID do arduino
+	std::string arduino_ID; // ID do arduino   trocar para inteiro?----------------------
 	int num_obs; // numero de observaçoes recolhidas
+	int delta_time;
+	int time_1;
+	int prev_delta_time;
+	int prev_duty_cycle;
+	int prev2_duty_cycle;
+
+	int transient;
+	int time_transient;
+	int prev_time_transient;
+
 	float illuminance; //LDR
 	float duty_cycle; //PWM
 	bool occupancy;
@@ -55,7 +72,6 @@ public:
 	float illuminance_ref; // lux_ref
 	float inst_power_desk;
 	float acc_ener_desk;
-	float acc_ener_system;
 	float acc_comfort_error_desk;
 	float acc_comfort_var_desk;
 	std::vector<float> illuminance_min;

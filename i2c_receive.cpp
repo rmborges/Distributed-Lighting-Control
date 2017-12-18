@@ -71,7 +71,7 @@ int i2c_receive::read_from_i2c()
 		{
 
 			if (xfer.rxCnt > 0){
-				cout << xfer.rxBuf << endl;
+				//cout << xfer.rxBuf << endl;
 				string msg_arduino = string(xfer.rxBuf);
 				if (msg_arduino.find(I2C_ID) != string::npos) { // para verificar se msg tem identificador
 					bool ja_existe = false;
@@ -81,7 +81,8 @@ int i2c_receive::read_from_i2c()
 					if (::arduino_list.empty() == false) {
 						for (auto ard : arduino_list) {
 							if (ard->arduino_ID == arduino_id && ja_existe == false) {
-								ard->parse_i2c(msg_arduino);  // chama rotina que trata os dados
+								//ard->parse_i2c(msg_arduino);  // chama rotina que trata os dados
+								ard->parse_i2c("1 150 103.120 60.2 25.14 20");
 								ja_existe = true;
 							}
 						}
