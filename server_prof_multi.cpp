@@ -90,7 +90,7 @@ private:
 				//msg_.serial_write(line);
 				std::cout << "send to client: " << msg_send_client << "\n";
 
-
+				msg_send_client += "\n";
 				async_write(socket_,buffer(msg_send_client),
 					boost::bind(&tcp_connection::handle_write_client,
 						shared_from_this(),boost::asio::placeholders::error)); 
