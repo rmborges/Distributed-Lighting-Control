@@ -124,10 +124,10 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	//this->l_buffer.push_back(this->illuminance);
 	this->l_buffer.push_back(this->illuminance);
 	this->d_buffer.push_back(this->duty_cycle);
-	this->time_buffer.push_back(this->time_1);
+	this->time_buffer.push_back(elapsed_time);
 
 	std::cout << "l_buffer: " << this->l_buffer.back() << " d_buffer " << this->d_buffer.back() << " time_buffer " << this->time_buffer.back() << "\n"; 
-	//std::cout << "num_obs " << this->num_obs << " elapsed_time " << elapsed_time << "\n";
+	std::cout << "num_obs " << this->num_obs << " elapsed_time " << elapsed_time << "\n";
 }
 
 void arduino::calc_inst_power_desk() {
