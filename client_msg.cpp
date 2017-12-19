@@ -13,7 +13,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	char str_aux[100];
 	memset(str_aux,0,sizeof(str_aux));
 
-	std::cout << "\nmsg_from_client: "<< msg_from_client << std::endl;
+	//std::cout << "\nmsg_from_client: "<< msg_from_client << std::endl;
 
 	std::vector<std::string> strs;
 	boost::split(strs,msg_from_client,boost::is_any_of(" "));
@@ -44,7 +44,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		arduino* pt_ard;
 		for (auto ard : arduino_list) {
 			if (ard->arduino_ID.compare(strs[2])==0){
-				std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
+				//std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
 				count +=1;
 				pt_ard = ard;
 				break;
@@ -142,7 +142,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		arduino* pt_ard;
 		for (auto ard : arduino_list) {
 			if (ard->arduino_ID.compare(strs[2])==0){
-				std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
+				//std::cout << "sou o arduino " << ard->arduino_ID << "---" << strs[2] << std::endl;
 				count +=1;
 				pt_ard = ard;
 				break;
@@ -151,22 +151,21 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 
 		if (strs[1].compare("l") == 0) {
 			msg_to_client = "b l "+strs[2]+" ";
-			auto it = pt_ard->l_buffer[0];
-			int pos = 0;
-			while (it != pt_ard->l_buffer.back()) {
-				msg_to_client += std::to_string(it);
-				msg_to_client += ", ";
-				pos++;
-				it = pt_ard->l_buffer[pos];
-			}
-			/*for (auto it = pt_ard->l_buffer[0]; it != pt_ard->l_buffer.back(); ) {
+			for (boost::circular_buffer<float>::iterator it = pt_ard->l_buffer.begin(); it != pt_ard->l_buffer.end(); it++) {
 				msg_to_client += std::to_string(*it);
 				msg_to_client += ", ";
-				it = pt_ard->l_buffer[0]
-			}*/
+			}
 			msg_to_client.erase(msg_to_client.end()-2, msg_to_client.end()); // elimina ", " a mais no fim
-			//+ std::to_string(pt_ard->acc_comfort_var_system);
 		}
+		else if(strs[1].compare("d") == 0) {
+			msg_to_client = "b d "+strs[2]+" ";
+			for (boost::circular_buffer<float>::iterator it = pt_ard->d_buffer.begin(); it != pt_ard->d_buffer.end(); it++) {
+				msg_to_client += std::to_string(*it);
+				msg_to_client += ", ";
+			}
+			msg_to_client.erase(msg_to_client.end()-2, msg_to_client.end()); // elimina ", " a mais no fim
+		}
+
 	}
 	else if (cmd.compare("c") == 0)
 	{

@@ -32,7 +32,7 @@ int getMilliSpan(int nTimeStart){
 	int nSpan = getMilliCount() - nTimeStart;
 	if(nSpan < 0)
 		nSpan += 0x100000 * 1000;
-	std::cout << nSpan << "\n";
+	//std::cout << nSpan << "\n";
 	return nSpan;
 }
 
@@ -41,7 +41,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	//std::cout << "parsing i2c\n";
 	
 	//id lux pwm lower_bound ext_illuminance lux_ref
-	std::cout << "msg inicio:" << i2c_msg <<" -> " <<i2c_msg.length() << "\n";
+	//std::cout << "msg inicio:" << i2c_msg <<" -> " <<i2c_msg.length() << "\n";
 	std::string treated_string;
 
 	treated_string= i2c_msg.substr(0,3)+" "+i2c_msg.substr(3,3)+"."+i2c_msg.substr(6,2)+" "+
@@ -49,7 +49,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	i2c_msg.substr(18,3)+"."+i2c_msg.substr(21,2)+" "+i2c_msg.substr(23,3)+"."+i2c_msg.substr(26,2);
 
 	i2c_msg = treated_string;
-	std::cout << "msg :" << i2c_msg << "\n";
+	//std::cout << "msg :" << i2c_msg << "\n";
 
 	std::vector<std::string> strs;
 	boost::split(strs,i2c_msg,boost::is_any_of(" "));
@@ -82,7 +82,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 		this->delta_time = getMilliSpan(this->time_1);
 		//std::cout << this->delta_time << "\n";
 	}
-	std::cout << "fora " << this->delta_time << "\n";
+	//std::cout << "fora " << this->delta_time << "\n";
 	std::string::size_type sz;
 
 	this->illuminance = std::stof(strs[1], &sz);
@@ -90,7 +90,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	this->lower_bound = std::stof(strs[4], &sz);
 	this->ext_illuminance = std::stof(strs[5], &sz);
 	float lux_ref = std::stof(strs[3], &sz);
-	std::cout << "ill :" << this->illuminance <<" pwm  "<< this->duty_cycle<<  "\n";
+	//std::cout << "ill :" << this->illuminance <<" pwm  "<< this->duty_cycle<<  "\n";
 	if (this->illuminance_ref != lux_ref)
 	{
 		this->illuminance_ref = lux_ref;
@@ -122,12 +122,12 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	this->time_1 = getMilliCount();
 
 	//this->l_buffer.push_back(this->illuminance);
-	this->l_buffer.push_back(this->delta_time);
+	this->l_buffer.push_back(this->illuminance);
 	this->d_buffer.push_back(this->duty_cycle);
 	this->time_buffer.push_back(this->time_1);
 
-	//std::cout << "l_buffer: " << this->l_buffer.back() << " d_buffer " << this->d_buffer.back() << " time_buffer " << this->time_buffer.back() << "\n"; 
-	std::cout << "num_obs " << this->num_obs << " elapsed_time " << elapsed_time << "\n";
+	std::cout << "l_buffer: " << this->l_buffer.back() << " d_buffer " << this->d_buffer.back() << " time_buffer " << this->time_buffer.back() << "\n"; 
+	//std::cout << "num_obs " << this->num_obs << " elapsed_time " << elapsed_time << "\n";
 }
 
 void arduino::calc_inst_power_desk() {
@@ -160,7 +160,13 @@ float arduino::calc_acc_ener_system(std::vector<arduino*> arduino_list) {
 
 void arduino::update_acc_comfort_error_desk() {
 	this->acc_comfort_error_desk = this->acc_comfort_error_desk*(this->num_obs-1);
-	this->acc_comfort_error_desk += this->illuminance_ref-this->illuminance;
+	float aux =  this->illuminance_ref-this->illuminance;
+	if (aux > 0)
+	{
+		this->acc_comfort_error_desk += aux;
+	}else{
+		this->acc_comfort_error_desk += 0;
+	}
 	this->acc_comfort_error_desk = (this->acc_comfort_error_desk)/(this->num_obs);
 }
 
@@ -176,9 +182,13 @@ void arduino::update_acc_comfort_var_desk() {
 	if (this->num_obs > 1)
 	{
 		this->acc_comfort_var_desk = this->acc_comfort_var_desk*(this->num_obs-2);
-		float ts = this->delta_time * this->prev_delta_time;
+		float ts = 0.02*0.02;
 		float sum = this->duty_cycle - 2*(this->prev_duty_cycle) + this->prev2_duty_cycle;
-		this->acc_comfort_var_desk += sum/(ts/1000);
+		if (sum < 0)
+		{
+			sum = sum * (-1);
+		}
+		this->acc_comfort_var_desk += sum/ts;
 		this->acc_comfort_var_desk = this->acc_comfort_var_desk/(this->num_obs-1);
 	}
 }

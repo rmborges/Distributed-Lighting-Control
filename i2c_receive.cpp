@@ -72,7 +72,7 @@ int i2c_receive::read_from_i2c()
 		{
 
 			if (xfer.rxCnt > 0){
-				cout << xfer.rxBuf << endl;
+				//cout << xfer.rxBuf << endl;
 				string msg_arduino = string(xfer.rxBuf);
 				if (msg_arduino.find("I") != string::npos || msg_arduino.find("D") != string::npos) { // para verificar se msg tem identificador
 					bool ja_existe = false;
@@ -95,10 +95,14 @@ int i2c_receive::read_from_i2c()
 								{
 									//msg_parse += msg_arduino.substr(1, msg_arduino.length()-1);
 									msg_arduino.erase(0,1);
-									cout << "parse antes: "<< msg_parse << endl;
+									//cout << "parse antes: "<< msg_parse << endl;
 									msg_parse += msg_arduino;
-									cout << "parse depois: "<< msg_parse << endl;
-									ard->parse_i2c(msg_parse);
+									//cout << "parse depois: "<< msg_parse << endl;
+									if (msg_parse.length() == 30)
+									{
+										ard->parse_i2c(msg_parse);
+									}
+
 								}
 								ja_existe = true;
 
