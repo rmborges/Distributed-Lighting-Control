@@ -32,7 +32,8 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		}
 		// enviar comando pelo serial para RESTART
 		serial_send msg_(io2);
-		msg_.serial_write("RESTART\n"); // msg definida em client_msg.h
+		msg_.serial_write("r\n"); // msg definida em client_msg.h
+		//msg_.serial_write("\n");
 	}
 
 
@@ -126,14 +127,14 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 				break;
 			}
 		}
-		serial_msg = "DESK "+strs[1];
+		serial_msg = "d"+strs[1];
 		if (strs[2].compare("0") == 0)
 		{
 			pt_ard->occupancy = false;
-			serial_msg += " 0\n";
+			serial_msg += "off\n";
 		}else{
 			pt_ard->occupancy = true;
-			serial_msg += " 1\n";
+			serial_msg += "on\n";
 		}
 		
 		msg_to_client = "ack";
@@ -179,6 +180,17 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	else if (cmd.compare("d") == 0)
 	{
 		//para continuar----------------------------
+		msg_to_client = "ack";
+	}
+	else if (cmd.compare("a") == 0) // liga/desliga consensus
+	{
+		serial_send msg_3(io2);
+		if (strs[1].compare("0") == 0) {
+			msg_3.serial_write("on\n");
+		}
+		if (strs[1].compare("1") == 0) {
+			msg_3.serial_write("off\n");
+		}
 		msg_to_client = "ack";
 	}
 

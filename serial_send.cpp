@@ -19,7 +19,7 @@ void serial_send::start_serial(io_service& io_serial)
 		//exit(-1);
 	}
 
-	sp->set_option(serial_port_base::baud_rate(9600), error_serial);
+	sp->set_option(serial_port_base::baud_rate(115200), error_serial);
 	if (error_serial) {
 		std::cout << "Error opening serial port" << std::endl;
 		//exit(-1);

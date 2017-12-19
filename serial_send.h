@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include "serial_send.h"
 
-//#define USB "/dev/ttyACM0"
-#define USB "/dev/ttyUSB0"
+#define USB "/dev/ttyACM0"
+//#define USB "/dev/ttyUSB0"
 
 using namespace boost::asio;
 using ip::tcp;
