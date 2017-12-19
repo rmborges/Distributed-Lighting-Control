@@ -39,9 +39,20 @@ int getMilliSpan(int nTimeStart){
 
 void arduino::parse_i2c(std::string i2c_msg) {
 	//std::cout << "parsing i2c\n";
+	
+	//id lux pwm lower_bound ext_illuminance lux_ref
+	std::cout << "msg inicio:" << i2c_msg <<" -> " <<i2c_msg.length() << "\n";
+	std::string treated_string;
+
+	treated_string= i2c_msg.substr(0,3)+" "+i2c_msg.substr(3,3)+"."+i2c_msg.substr(6,2)+" "+
+	i2c_msg.substr(8,3)+" "+i2c_msg.substr(11,3)+" "+
+	i2c_msg.substr(18,3)+"."+i2c_msg.substr(21,2)+" "+i2c_msg.substr(23,3)+"."+i2c_msg.substr(26,2);
+
+	i2c_msg = treated_string;
+	std::cout << "msg :" << i2c_msg << "\n";
+
 	std::vector<std::string> strs;
 	boost::split(strs,i2c_msg,boost::is_any_of(" "));
-	//id lux pwm lower_bound ext_illuminance lux_ref
 
 	if (restart == 1) {
 		inst_power_system = 0;
@@ -59,7 +70,7 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	else {
 		elapsed_time = getMilliSpan(init_time);
 	}
-		
+
 
 	if (this->num_obs > 1){
 		this->prev2_duty_cycle = this->prev_duty_cycle;
@@ -76,9 +87,10 @@ void arduino::parse_i2c(std::string i2c_msg) {
 
 	this->illuminance = std::stof(strs[1], &sz);
 	this->duty_cycle = std::stof(strs[2], &sz);
-	this->lower_bound = std::stof(strs[3], &sz);
-	this->ext_illuminance = std::stof(strs[4], &sz);
-	float lux_ref = std::stof(strs[5], &sz);
+	this->lower_bound = std::stof(strs[4], &sz);
+	this->ext_illuminance = std::stof(strs[5], &sz);
+	float lux_ref = std::stof(strs[3], &sz);
+	std::cout << "ill :" << this->illuminance <<" pwm  "<< this->duty_cycle<<  "\n";
 	if (this->illuminance_ref != lux_ref)
 	{
 		this->illuminance_ref = lux_ref;

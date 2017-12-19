@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <boost/algorithm/string.hpp>
 #include "arduino.h"
 

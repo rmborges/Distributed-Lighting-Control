@@ -10,6 +10,7 @@
 #include <vector>
 #include <boost/circular_buffer.hpp>
 #include <boost/algorithm/string.hpp>
+#include <string>
 
 #include <cstdlib> //tempo
 #include <sys/timeb.h>

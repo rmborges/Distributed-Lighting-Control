@@ -61,6 +61,7 @@ int i2c_receive::read_from_i2c()
 	if (gpioInitialise()<0) 
 		return 1;
 
+	std::string msg_parse;
 	while(1){
 		bsc_xfer_t xfer;
 		xfer.control = (0x9<<16) | 0x205; // Set I2C slave Address to 0x9
@@ -71,19 +72,36 @@ int i2c_receive::read_from_i2c()
 		{
 
 			if (xfer.rxCnt > 0){
-				//cout << xfer.rxBuf << endl;
+				cout << xfer.rxBuf << endl;
 				string msg_arduino = string(xfer.rxBuf);
-				if (msg_arduino.find(I2C_ID) != string::npos) { // para verificar se msg tem identificador
+				if (msg_arduino.find("I") != string::npos || msg_arduino.find("D") != string::npos) { // para verificar se msg tem identificador
 					bool ja_existe = false;
-					vector<string> strs;
-					boost::split(strs,msg_arduino, boost::is_any_of(" "));
-					string arduino_id = strs[1]; // ID do arduino que enviou a mensagem
+					//vector<string> strs;
+					//boost::split(strs,msg_arduino, boost::is_any_of(" "));
+					//string arduino_id = strs[1]; // ID do arduino que enviou a mensagem
+					string arduino_id = msg_arduino.substr(1,3);
 					if (::arduino_list.empty() == false) {
 						for (auto ard : arduino_list) {
-							if (ard->arduino_ID == arduino_id && ja_existe == false) {
+							if (ard->arduino_ID == arduino_id) {
 								//ard->parse_i2c(msg_arduino);  // chama rotina que trata os dados
-								ard->parse_i2c("1 150 103.120 60.2 25.14 20");
+								//ard->parse_i2c("1 150 103.120 60.2 25.14 20");
+								cout << "msg ard: "<< msg_arduino << endl;
+								if (msg_arduino[0] == 'I')
+								{
+									//msg_parse = msg_arduino.substr(1, msg_arduino.length()-1);
+									msg_arduino.erase(0,1);
+									msg_parse = msg_arduino;
+								}else if (msg_arduino[0] == 'D'&& msg_parse.empty() == 0)
+								{
+									//msg_parse += msg_arduino.substr(1, msg_arduino.length()-1);
+									msg_arduino.erase(0,1);
+									cout << "parse antes: "<< msg_parse << endl;
+									msg_parse += msg_arduino;
+									cout << "parse depois: "<< msg_parse << endl;
+									ard->parse_i2c(msg_parse);
+								}
 								ja_existe = true;
+
 							}
 						}
 					}
@@ -101,3 +119,4 @@ int i2c_receive::read_from_i2c()
 	gpioTerminate();
 	return 0;
 }
+
