@@ -14,7 +14,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	memset(str_aux,0,sizeof(str_aux));
 
 	//std::cout << "\nmsg_from_client: "<< msg_from_client << std::endl;
-
+	
 	std::vector<std::string> strs;
 	boost::split(strs,msg_from_client,boost::is_any_of(" "));
 	std::string cmd = strs[0];
@@ -32,7 +32,7 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 		}
 		// enviar comando pelo serial para RESTART
 		serial_send msg_(io2);
-		msg_.serial_write(MSG_RESET); // msg definida em client_msg.h
+		msg_.serial_write("RESTART\n"); // msg definida em client_msg.h
 	}
 
 
@@ -118,22 +118,27 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	}
 	else if (cmd.compare("s") == 0)
 	{
-		arduino* pt_ard_s;
+		std::string serial_msg;
+		arduino* pt_ard;
 		for (auto ard : arduino_list) {
-			if (ard->arduino_ID.compare(strs[2])==0){
-				pt_ard_s = ard;
+			if (ard->arduino_ID.compare(strs[1])==0){
+				pt_ard = ard;
 				break;
 			}
 		}
+		serial_msg = "DESK "+strs[1];
 		if (strs[2].compare("0") == 0)
 		{
-			pt_ard_s->occupancy = false;
+			pt_ard->occupancy = false;
+			serial_msg += " 0\n";
 		}else{
-			pt_ard_s->occupancy = true;
+			pt_ard->occupancy = true;
+			serial_msg += " 1\n";
 		}
 		
 		msg_to_client = "ack";
-
+		serial_send msg_2(io2);
+		msg_2.serial_write(serial_msg);
 
 	}
 	else if (cmd.compare("b") == 0)

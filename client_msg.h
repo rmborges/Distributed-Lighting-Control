@@ -14,8 +14,6 @@
 #include "serial_send.h"
 #include <algorithm>
 
-#define MSG_RESET "RESTART"
-
 using namespace boost::asio;
 using ip::tcp;
 using boost::asio::deadline_timer;
