@@ -1,4 +1,5 @@
 #include "client_msg.h"
+#include "arduino.h"
 
 client_msg::client_msg()
 {}
@@ -22,8 +23,9 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 	if (cmd.compare("r") == 0) 
 	{
 		msg_to_client = "ack";
-		//arduino.restart = true;
 		// RESTART - remover objetos arduino no RPi
+		arduino reset("restart");
+		reset.restart = 1; // mudar boolean para reiniciar variaveis static da classe arduino
 		for (auto it = arduino_list.begin(); it != arduino_list.end(); ) {
 			delete * it;  
 			it = arduino_list.erase(it);
@@ -90,7 +92,9 @@ std::string client_msg::print_message(std::string msg_from_client, std::string m
 				case 'v': 
 				msg_to_client = "v "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->acc_comfort_var_desk);
 				break;
-
+				case 't':
+				msg_to_client = "t "+pt_ard->arduino_ID+" "+std::to_string(pt_ard->elapsed_time);
+				break;
 			}
 
 		}

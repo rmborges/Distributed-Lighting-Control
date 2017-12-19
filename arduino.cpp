@@ -19,6 +19,7 @@ float arduino::acc_comfort_error_system = 0;
 float arduino::acc_comfort_var_system = 0;
 float arduino::init_time = 0;
 float arduino::elapsed_time = 0;
+bool arduino::restart = 0;
 
 //codigo de http://www.cplusplus.com/forum/general/43203/
 int getMilliCount(){
@@ -41,6 +42,16 @@ void arduino::parse_i2c(std::string i2c_msg) {
 	std::vector<std::string> strs;
 	boost::split(strs,i2c_msg,boost::is_any_of(" "));
 	//id lux pwm lower_bound ext_illuminance lux_ref
+
+	if (restart == 1) {
+		inst_power_system = 0;
+		acc_ener_system = 0;
+		acc_comfort_error_system = 0;
+		acc_comfort_var_system = 0;
+		init_time = 0;
+		elapsed_time = 0;
+		restart = 0;
+	}
 
 	if (this->num_obs == 0) {
 		init_time = getMilliCount();
@@ -123,7 +134,7 @@ void arduino::update_acc_ener_desk() {
 	if(this->num_obs <= 1){
 		this->acc_ener_desk += 0;
 	}else{
-		this->acc_ener_desk += this->inst_power_desk*this->delta_time;
+		this->acc_ener_desk += this->inst_power_desk*this->delta_time/1000;
 	}
 }
 
@@ -155,7 +166,7 @@ void arduino::update_acc_comfort_var_desk() {
 		this->acc_comfort_var_desk = this->acc_comfort_var_desk*(this->num_obs-2);
 		float ts = this->delta_time * this->prev_delta_time;
 		float sum = this->duty_cycle - 2*(this->prev_duty_cycle) + this->prev2_duty_cycle;
-		this->acc_comfort_var_desk += sum/ts;
+		this->acc_comfort_var_desk += sum/(ts/1000);
 		this->acc_comfort_var_desk = this->acc_comfort_var_desk/(this->num_obs-1);
 	}
 }

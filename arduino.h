@@ -44,7 +44,7 @@ public:
 
 //private:
 	// common to all arduinos
-	//static bool restart; // necessário? ou enviar so mensagem?
+	static bool restart; // necessário? ou enviar so mensagem?
 	static float inst_power_system;
 	static float acc_ener_system;
 	static float acc_comfort_error_system;
