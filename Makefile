@@ -1,7 +1,7 @@
-all: client_prof server_prof_multi
+all: async_tcp_client server
 
-client_prof: client_prof.cpp 
-	g++ -std=c++11 client_prof.cpp -o client_prof -lpthread -lboost_system -lboost_thread
+async_tcp_client: async_tcp_client.cpp 
+	g++ -std=c++11 async_tcp_client.cpp -o async_tcp_client -lpthread -lboost_system -lboost_thread
 
-server_prof_multi: server_prof_multi.cpp
-	g++ -std=c++11 server_prof_multi.cpp client_msg.cpp arduino.cpp serial_send.cpp i2c_receive.cpp -o server_prof_multi -pthread -lpthread -lboost_system -lboost_thread -lpigpio -lrt -lstdc++
+server: server.cpp
+	g++ -std=c++11 server.cpp client_msg.cpp arduino.cpp serial_send.cpp i2c_receive.cpp -o server -pthread -lpthread -lboost_system -lboost_thread -lpigpio -lrt -lstdc++
